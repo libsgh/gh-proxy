@@ -44,8 +44,8 @@
                 <input
                     type="text"
                     class="form-control"
-                    list="datalistOptions"
                     name="q"
+                    list="datalistOptions"
                     placeholder="键入Github文件链接"
                     pattern="^((https|http):\/\/)?(github\.com\/.+?\/.+?\/(?:releases|archive|blob|raw|suites)|((?:raw|gist)\.(?:githubusercontent|github)\.com))\/.+$"
                     required />
@@ -53,6 +53,12 @@
                     <i data-feather="zap" style="width: 20px; height: 20px"></i>
                     加速下载
                 </button>
+                <datalist id="datalistOptions">
+                  <option value="https://github.com/XTLS/Xray-core/releases/download/v1.8.7/Xray-windows-64.zip">
+                  <option value="https://github.com/XTLS/Xray-core/archive/refs/heads/main.zip">
+                  <option value="https://raw.githubusercontent.com/XTLS/Xray-core/main/LICENSE">
+                  <option value="https://github.com/XTLS/Xray-core/archive/refs/tags/v1.8.7.zip">
+                </datalist>
                 <div id="valid-feedback" class="valid-feedback text-start"></div>
                 <div id="invalid-feedback" class="invalid-feedback text-start">无效的URL链接，请参考下方支持的URL格式！</div>
             </div>
@@ -82,17 +88,17 @@
               <p class="text-start">
                 git clone：git clone
                 <span class="speed-prefix"></span
-                >https://github.com/microsoft/vscode
+                >https://github.com/XTLS/Xray-core.git
               </p>
               <p class="text-start">
                 wget：wget
                 <span class="speed-prefix"></span
-                >https://github.com/microsoft/vscode/archive/refs/heads/main.zip
+                >https://github.com/XTLS/Xray-core/archive/refs/heads/main.zip
               </p>
               <p class="text-start">
                 curl：curl -O
                 <span class="speed-prefix"></span
-                >https://github.com/microsoft/vscode/archive/refs/tags/1.85.2.zip
+                >https://github.com/XTLS/Xray-core/archive/refs/tags/v1.8.7.zip
               </p>
             </div>
           </form>
