@@ -13,7 +13,7 @@ github release、archive以及项目文件的加速项目，支持clone，有Clo
 ## 魔改
 1. 首页不再依赖于外部服务
 2. 首页样式优化：自动明暗主题
-3. 计划：直链简化
+3. 直链缩短：github、raw、gist 等同于 https://github.com、https://raw.githubusercontent.com、https://gist.githubusercontent.com
 
 ## python版本和cf worker版本差异
 

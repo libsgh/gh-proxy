@@ -75,7 +75,7 @@
             <div class="card-body">
               <h4 class="card-title" class="fw-bold">支持格式</h4>
               <p class="text-start">
-                分支源码：https://github.com/XTLS/Xray-core/archive/refs/heads/main.zip
+                分支源码：https://github.com/XTLS/Xray-core/archive/refs/heads/main.zip 
               </p>
               <p class="text-start">
                 Release源码：https://github.com/XTLS/Xray-core/archive/refs/tags/v1.8.7.zip
@@ -88,6 +88,12 @@
               </p>
               <p class="text-start">
                 Raw文件：https://raw.githubusercontent.com/XTLS/Xray-core/main/LICENSE
+              </p>
+              <p class="text-start">
+                短链接：<b>github</b>、<b>raw</b>、<b>gist</b> 等同于 https://github.com、https://raw.githubusercontent.com、https://gist.githubusercontent.com<br>
+                        <span class="speed-prefix ms-5"></span><b>github</b>/XTLS/Xray-core/releases/download/v1.8.7/Xray-windows-64.zip<br>
+                        <span class="speed-prefix ms-5"></span><b>raw</b>/XTLS/Xray-core/main/LICENSE<br>
+                        <span class="speed-prefix ms-5"></span><b>gist</b>/yisibl/7983901/raw/af7ec3f7fe65c298315179875cb1e5aff60d6035/git-resources.md
               </p>
               <p class="text-start">
                 git clone：git clone
@@ -126,7 +132,10 @@
       crossorigin="anonymous"></script>
     <script type="text/javascript">
       (function() {
-        document.querySelector("#logo-svg").setAttribute("src", window.matchMedia("(prefers-color-scheme: dark)").matches ? "/static/favicon-dark.svg": "/static/favicon.svg");
+        function updateGitHubLogo(){
+          document.querySelector("#logo-svg").setAttribute("src", window.matchMedia("(prefers-color-scheme: dark)").matches ? "/static/favicon-dark.svg": "/static/favicon.svg");
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateGitHubLogo);
       })();    
       feather.replace();
       var elements = document.getElementsByClassName("speed-prefix");
