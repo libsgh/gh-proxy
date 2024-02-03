@@ -32,7 +32,6 @@
           document.querySelector("html").setAttribute("data-bs-theme", window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark": "light");
           document.querySelector("#icon-png").setAttribute("href", window.matchMedia("(prefers-color-scheme: dark)").matches ? "/static/favicon-dark.png": "/static/favicon.png");
           document.querySelector("#icon-svg").setAttribute("href", window.matchMedia("(prefers-color-scheme: dark)").matches ? "/static/favicon-dark.svg": "/static/favicon.svg");
-          document.querySelector("#logo-svg").setAttribute("src", window.matchMedia("(prefers-color-scheme: dark)").matches ? "/static/favicon-dark.svg": "/static/favicon.svg");
         }
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateTheme);
         updateTheme();
@@ -126,6 +125,9 @@
       src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.1/js/bootstrap.bundle.min.js"
       crossorigin="anonymous"></script>
     <script type="text/javascript">
+      (function() {
+        document.querySelector("#logo-svg").setAttribute("src", window.matchMedia("(prefers-color-scheme: dark)").matches ? "/static/favicon-dark.svg": "/static/favicon.svg");
+      })();    
       feather.replace();
       var elements = document.getElementsByClassName("speed-prefix");
       for (var i = 0; i < elements.length; i++) {

@@ -113,6 +113,21 @@ def check_url(u):
             return m
     return False
 
+@app.route('/github/<path:u>', methods=['GET', 'POST'])
+def g_handler(u):
+    u =  'https://github.com/' + u
+    return handler(u)
+
+@app.route('/raw/<path:u>', methods=['GET', 'POST'])
+def raw_handler(u):
+    u =  'https://raw.githubusercontent.com/' + u
+    return handler(u)
+
+@app.route('/gist/<path:u>', methods=['GET', 'POST'])
+def gist_handler(u):
+    u =  'https://gist.githubusercontent.com/' + u
+    return handler(u)
+
 
 @app.route('/<path:u>', methods=['GET', 'POST'])
 def handler(u):
