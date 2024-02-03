@@ -6,13 +6,13 @@ github release、archive以及项目文件的加速项目，支持clone，有Clo
 
 ## 演示
 
-[https://gh.api.99988866.xyz/](https://gh.api.99988866.xyz/)
+[https://gh.noki.eu.org/](https://gh.noki.eu.org/)
 
-演示站为公共服务，如有大规模使用需求请自行部署，演示站有点不堪重负
+演示站为公共服务，如有大规模使用需求请自行部署
 
-![imagea272c95887343279.png](https://img.maocdn.cn/img/2021/04/24/imagea272c95887343279.png)
-
-当然也欢迎[捐赠](#捐赠)以支持作者
+## 魔改
+1. 首页不再依赖于外部服务
+2. 首页样式优化
 
 ## python版本和cf worker版本差异
 

@@ -28,6 +28,15 @@
         color: red;
       }
     </style>
+    <script>
+       (function() {
+        function updateTheme() {
+            document.querySelector("html").setAttribute("data-bs-theme", window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark": "light")
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateTheme);
+        updateTheme();
+      })();    
+    </script>
   </head>
   <body>
     <div class="container text-center">
@@ -44,7 +53,7 @@
                 <input
                     type="text"
                     class="form-control"
-                    name="q"
+                    name="ghq"
                     list="datalistOptions"
                     placeholder="键入Github文件链接"
                     pattern="^((https|http):\/\/)?(github\.com\/.+?\/.+?\/(?:releases|archive|blob|raw|suites)|((?:raw|gist)\.(?:githubusercontent|github)\.com))\/.+$"
@@ -53,12 +62,7 @@
                     <i data-feather="zap" style="width: 20px; height: 20px"></i>
                     加速下载
                 </button>
-                <datalist id="datalistOptions">
-                  <option value="https://github.com/XTLS/Xray-core/releases/download/v1.8.7/Xray-windows-64.zip">
-                  <option value="https://github.com/XTLS/Xray-core/archive/refs/heads/main.zip">
-                  <option value="https://raw.githubusercontent.com/XTLS/Xray-core/main/LICENSE">
-                  <option value="https://github.com/XTLS/Xray-core/archive/refs/tags/v1.8.7.zip">
-                </datalist>
+                <datalist id="datalistOptions"></datalist>
                 <div id="valid-feedback" class="valid-feedback text-start"></div>
                 <div id="invalid-feedback" class="invalid-feedback text-start">无效的URL链接，请参考下方支持的URL格式！</div>
             </div>
@@ -129,7 +133,7 @@
       }
       function toSubmit(e) {
         var forms = document.getElementsByClassName('needs-validation');
-        var url = getLocationUri() + document.getElementsByName("q")[0].value;
+        var url = getLocationUri() + document.getElementsByName("ghq")[0].value;
         if(forms[0].checkValidity() == false) {
           event.preventDefault();
           event.stopPropagation();
