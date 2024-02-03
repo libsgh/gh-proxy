@@ -8,12 +8,12 @@ github release、archive以及项目文件的加速项目，支持clone，有Clo
 
 [https://gh.noki.eu.org/](https://gh.noki.eu.org/)
 
-演示站为公共服务，如有大规模使用需求请自行部署
+演示站为公益服务，如有大规模使用需求请自行部署
 
 ## 魔改
 1. 首页不再依赖于外部服务
 2. 首页样式优化：自动明暗主题
-3. 直链缩短：github、raw、gist 等同于 https://github.com、https://raw.githubusercontent.com、https://gist.githubusercontent.com
+3. 直链缩短：github、raw、gist 等同于 https://github.com、 https://raw.githubusercontent.com、 https://gist.githubusercontent.com
 
 ## python版本和cf worker版本差异
 
