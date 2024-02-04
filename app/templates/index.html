@@ -25,6 +25,9 @@
       .speed-prefix {
         color: red;
       }
+      .ms-5 {
+        margin-left: 4rem!important;
+      }
     </style>
     <script>
        (function() {
@@ -139,6 +142,7 @@
           document.querySelector("#logo-svg").setAttribute("src", window.matchMedia("(prefers-color-scheme: dark)").matches ? "/static/favicon-dark.svg": "/static/favicon.svg");
         }
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateGitHubLogo);
+        updateGitHubLogo();
       })();    
       feather.replace();
       var elements = document.getElementsByClassName("speed-prefix");
