@@ -15,8 +15,8 @@ import os
 
 # config
 # 分支文件使用jsDelivr镜像的开关，0为关闭，默认关闭
-jsdelivr = 0
-size_limit = 1024 * 1024 * 1024 * 999  # 允许的文件大小，默认999GB，相当于无限制了 https://github.com/hunshcn/gh-proxy/issues/8
+jsdelivr = int(os.environ.get('JSDELIVR', 0))
+size_limit = int(os.environ.get('SIZE_LIMIT', 1024 * 1024 * 1024 * 999))  # 允许的文件大小，默认999GB，相当于无限制了 https://github.com/hunshcn/gh-proxy/issues/8
 
 """
   先生效白名单再匹配黑名单，pass_list匹配到的会直接302到jsdelivr而忽略设置
@@ -62,7 +62,7 @@ def index():
         return redirect('/' + request.args.get('q'))
     format_traffic = format_bytes(proxy_traffic)
     current_year = datetime.now().year
-    return render_template('index.html', current_year, proxy_count, format_traffic)
+    return render_template('index.html', current_year=current_year, proxy_count=proxy_count, format_traffic=format_traffic)
 
 
 @app.route('/favicon.ico')

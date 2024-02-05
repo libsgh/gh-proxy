@@ -63,6 +63,18 @@ github release、archive 以及项目文件的加速项目，支持 clone，有 
 
 ## Python 版本部署
 
+### 环境变量
+
+| KEY        | 描述                                                 | 默认值                    |
+| ---------- | ---------------------------------------------------- | ------------------------- |
+| HOST       | 绑定 HOST                                            | 127.0.0.1                 |
+| PORT       | 绑定端口                                             | 80                        |
+| JSDELIVR   | 分支文件使用 jsDelivr 镜像的开关，0 为关闭，默认关闭 | 0                         |
+| SIZE_LIMIT | 允许的文件大小，默认 999GB                           | 1024 _ 1024 _ 1024 \* 999 |
+| WHITE_LIST | 白名单：hunshcn                                      | 空                        |
+| BLACK_LIST | 黑名单：hunshcn/repo1                                | 空                        |
+| PASS_LIST  | 302 到 jsdelivr：hunshcn/repo100                     | 空                        |
+
 ### Docker 部署
 
 ```
