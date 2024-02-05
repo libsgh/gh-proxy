@@ -13,6 +13,11 @@ else
     content_server=$content_server"    listen ${USE_LISTEN_PORT};\n"
     content_server=$content_server'    location / {\n'
     content_server=$content_server'        try_files $uri @app;\n'
+    content_server=$content_server'        fastcgi_buffers 16 16k;\n'
+    content_server=$content_server'        fastcgi_buffer_size 32k;\n'
+    content_server=$content_server'        proxy_buffer_size 128k;\n'
+    content_server=$content_server'        proxy_buffers 4 256k;\n'
+    content_server=$content_server'        proxy_busy_buffers_size 256k;\n'
     content_server=$content_server'    }\n'
     content_server=$content_server'    location @app {\n'
     content_server=$content_server'        fastcgi_buffers 16 16k;\n'
