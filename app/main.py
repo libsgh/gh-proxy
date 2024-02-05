@@ -191,8 +191,9 @@ def proxy(u, allow_redirects=False):
             url = 'https://' + url[7:]
         r = requests.request(method=request.method, url=url, data=request.data, headers=r_headers, stream=True, allow_redirects=allow_redirects)
         headers = dict(r.headers)
-        content_length = int(r.headers['Content-length'])
+        content_length = 0
         if 'Content-length' in r.headers and content_length > size_limit:
+            content_length = int(r.headers['Content-length'])
             return redirect(u + request.url.replace(request.base_url, '', 1))
 
         def generate():
