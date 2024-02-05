@@ -10,6 +10,8 @@ from requests.utils import (
     stream_decode_response_unicode, iter_slices, CaseInsensitiveDict)
 from urllib3.exceptions import (
     DecodeError, ReadTimeoutError, ProtocolError)
+from datetime import datetime
+import os
 
 # config
 # 分支文件使用jsDelivr镜像的开关，0为关闭，默认关闭
@@ -24,15 +26,15 @@ size_limit = 1024 * 1024 * 1024 * 999  # 允许的文件大小，默认999GB，�
   user1/repo1 # 封禁user1的repo1
   */repo1 # 封禁所有叫做repo1的仓库
 """
-white_list = '''
-'''
-black_list = '''
-'''
-pass_list = '''
-'''
+white_list = str(os.environ.get('WHITE_LIST', '''
+'''))
+black_list = str(os.environ.get('BLACK_LIST', '''
+'''))
+pass_list = str(os.environ.get('PASS_LIST', '''
+'''))
 
-HOST = '127.0.0.1'  # 监听地址，建议监听本地然后由web服务器反代
-PORT = 80  # 监听端口
+HOST = str(os.environ.get('HOST', '127.0.0.1'))  # 监听地址，建议监听本地然后由web服务器反代
+PORT = int(os.environ.get('PORT', 80))  # 监听端口
 #ASSET_URL = 'https://hunshcn.github.io/gh-proxy'  # 主页
 
 white_list = [tuple([x.replace(' ', '') for x in i.split('/')]) for i in white_list.split('\n') if i]
@@ -47,6 +49,9 @@ exp2 = re.compile(r'^(?:https?://)?github\.com/(?P<author>.+?)/(?P<repo>.+?)/(?:
 exp3 = re.compile(r'^(?:https?://)?github\.com/(?P<author>.+?)/(?P<repo>.+?)/(?:info|git-).*$')
 exp4 = re.compile(r'^(?:https?://)?raw\.(?:githubusercontent|github)\.com/(?P<author>.+?)/(?P<repo>.+?)/.+?/.+$')
 exp5 = re.compile(r'^(?:https?://)?gist\.(?:githubusercontent|github)\.com/(?P<author>.+?)/.+?/.+$')
+# 简单统计：代理请求次数
+proxy_count = 0
+proxy_traffic = 0
 
 requests.sessions.default_headers = lambda: CaseInsensitiveDict()
 
@@ -55,7 +60,9 @@ requests.sessions.default_headers = lambda: CaseInsensitiveDict()
 def index():
     if 'q' in request.args:
         return redirect('/' + request.args.get('q'))
-    return render_template('index.html')
+    format_traffic = format_bytes(proxy_traffic)
+    current_year = datetime.now().year
+    return render_template('index.html', current_year, proxy_count, format_traffic)
 
 
 @app.route('/favicon.ico')
@@ -184,8 +191,8 @@ def proxy(u, allow_redirects=False):
             url = 'https://' + url[7:]
         r = requests.request(method=request.method, url=url, data=request.data, headers=r_headers, stream=True, allow_redirects=allow_redirects)
         headers = dict(r.headers)
-
-        if 'Content-length' in r.headers and int(r.headers['Content-length']) > size_limit:
+        content_length = int(r.headers['Content-length'])
+        if 'Content-length' in r.headers and content_length > size_limit:
             return redirect(u + request.url.replace(request.base_url, '', 1))
 
         def generate():
@@ -198,12 +205,20 @@ def proxy(u, allow_redirects=False):
                 headers['Location'] = '/' + _location
             else:
                 return proxy(_location, True)
-
+        proxy_count  = proxy_count + 1
+        proxy_traffic = proxy_traffic + content_length
         return Response(generate(), headers=headers, status=r.status_code)
     except Exception as e:
         headers['content-type'] = 'text/html; charset=UTF-8'
         return Response('server error ' + str(e), status=500, headers=headers)
-
+def format_bytes(size):
+    power = 2**10
+    n = 0
+    power_labels = {0: 'B', 1: 'KB', 2: 'MB', 3: 'GB', 4: 'TB'}
+    while size > power:
+        size /= power
+        n += 1
+    return f"{size:.2f} {power_labels[n]}"
 app.debug = True
 if __name__ == '__main__':
     app.run(host=HOST, port=PORT)
