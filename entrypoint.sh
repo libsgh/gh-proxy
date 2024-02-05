@@ -24,5 +24,4 @@ else
     # Save generated server /etc/nginx/conf.d/nginx.conf
     printf "$content_server" > /etc/nginx/conf.d/nginx.conf
 fi
-cat /etc/nginx/conf.d/nginx.conf
 exec "$@"
