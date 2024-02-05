@@ -206,8 +206,8 @@ def proxy(u, allow_redirects=False):
             else:
                 return proxy(_location, True)
         global proxy_count
-        global proxy_traffic
         proxy_count  = proxy_count + 1
+        global proxy_traffic
         proxy_traffic = proxy_traffic + content_length
         return Response(generate(), headers=headers, status=r.status_code)
     except Exception as e:
