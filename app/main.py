@@ -40,7 +40,7 @@ PORT = int(os.environ.get('PORT', 80))  # 监听端口
 white_list = [tuple([x.replace(' ', '') for x in i.split('/')]) for i in white_list.split('\n') if i]
 black_list = [tuple([x.replace(' ', '') for x in i.split('/')]) for i in black_list.split('\n') if i]
 pass_list = [tuple([x.replace(' ', '') for x in i.split('/')]) for i in pass_list.split('\n') if i]
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 CHUNK_SIZE = 1024 * 10
 # index_html = requests.get(ASSET_URL, timeout=10).text
 # icon_r = requests.get(ASSET_URL + '/favicon.ico', timeout=10).content
@@ -67,7 +67,7 @@ def index():
 
 @app.route('/favicon.ico')
 def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
+    return send_from_directory(app.static_folder,
                                'favicon.png', mimetype='image/vnd.microsoft.icon')
 
 
@@ -192,10 +192,10 @@ def proxy(u, allow_redirects=False):
         r = requests.request(method=request.method, url=url, data=request.data, headers=r_headers, stream=True, allow_redirects=allow_redirects)
         headers = dict(r.headers)
         content_length = 0
-        if 'Content-length' in r.headers and content_length > size_limit:
+        if 'Content-length' in r.headers:
             content_length = int(r.headers['Content-length'])
+        if 'Content-length' in r.headers and content_length > size_limit:
             return redirect(u + request.url.replace(request.base_url, '', 1))
-
         def generate():
             for chunk in iter_content(r, chunk_size=CHUNK_SIZE):
                 yield chunk
