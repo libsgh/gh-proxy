@@ -16,6 +16,7 @@ github release、archive 以及项目文件的加速项目，支持 clone，有 
 2. 首页样式优化：自动明暗主题
 3. 直链缩短：github、raw、gist 等同于 https://github.com、 https://raw.githubusercontent.com、 https://gist.githubusercontent.com
 4. 简单得代理次数、代理流量统计
+5. 支持 git.io、支持 api.github.com
 
 ## python 版本和 cf worker 版本差异
 
