@@ -11,6 +11,7 @@ from requests.utils import (
 from urllib3.exceptions import (
     DecodeError, ReadTimeoutError, ProtocolError)
 from datetime import datetime
+from diskcache import Cache
 import os
 
 # config
@@ -34,7 +35,7 @@ pass_list = str(os.environ.get('PASS_LIST', '''
 '''))
 
 HOST = str(os.environ.get('HOST', '127.0.0.1'))  # 监听地址，建议监听本地然后由web服务器反代
-PORT = int(os.environ.get('PORT', 5006))  # 监听端口
+PORT = int(os.environ.get('PORT', 80))  # 监听端口
 #ASSET_URL = 'https://hunshcn.github.io/gh-proxy'  # 主页
 
 white_list = [tuple([x.replace(' ', '') for x in i.split('/')]) for i in white_list.split('\n') if i]
@@ -50,8 +51,7 @@ exp3 = re.compile(r'^(?:https?://)?github\.com/(?P<author>.+?)/(?P<repo>.+?)/(?:
 exp4 = re.compile(r'^(?:https?://)?raw\.(?:githubusercontent|github)\.com/(?P<author>.+?)/(?P<repo>.+?)/.+?/.+$')
 exp5 = re.compile(r'^(?:https?://)?gist\.(?:githubusercontent|github)\.com/(?P<author>.+?)/.+?/.+$')
 # 简单统计：代理请求次数
-proxy_count = 0
-proxy_traffic = 0
+cache = Cache()
 
 requests.sessions.default_headers = lambda: CaseInsensitiveDict()
 
@@ -60,9 +60,9 @@ requests.sessions.default_headers = lambda: CaseInsensitiveDict()
 def index():
     if 'q' in request.args:
         return redirect('/' + request.args.get('q'))
-    format_traffic = format_bytes(proxy_traffic)
+    format_traffic = format_bytes(cache.get('proxy_traffic'))
     current_year = datetime.now().year
-    return render_template('index.html', current_year=current_year, proxy_count=proxy_count, format_traffic=format_traffic)
+    return render_template('index.html', current_year=current_year, proxy_count=cache.get('proxy_count'), format_traffic=format_traffic)
 
 
 @app.route('/favicon.ico')
@@ -206,10 +206,8 @@ def proxy(u, allow_redirects=False):
                 headers['Location'] = '/' + _location
             else:
                 return proxy(_location, True)
-        global proxy_count
-        proxy_count  = proxy_count + 1
-        global proxy_traffic
-        proxy_traffic = proxy_traffic + content_length
+        cache.set('proxy_count', cache.get('proxy_count') + 1)
+        cache.set('proxy_traffic', cache.get('proxy_traffic') + content_length)
         return Response(generate(), headers=headers, status=r.status_code)
     except Exception as e:
         headers['content-type'] = 'text/html; charset=UTF-8'
@@ -224,4 +222,6 @@ def format_bytes(size):
     return f"{size:.2f} {power_labels[n]}"
 app.debug = True
 if __name__ == '__main__':
+    cache.set('proxy_count', 0)
+    cache.set('proxy_traffic', 0)
     app.run(host=HOST, port=PORT)
