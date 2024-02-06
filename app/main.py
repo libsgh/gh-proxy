@@ -60,9 +60,9 @@ requests.sessions.default_headers = lambda: CaseInsensitiveDict()
 def index():
     if 'q' in request.args:
         return redirect('/' + request.args.get('q'))
-    format_traffic = format_bytes(int(cache.get('proxy_traffic')))
+    format_traffic = format_bytes(int(cache.get('proxy_traffic'), 0))
     current_year = datetime.now().year
-    return render_template('index.html', current_year=current_year, proxy_count=int(cache.get('proxy_count')), format_traffic=format_traffic)
+    return render_template('index.html', current_year=current_year, proxy_count=int(cache.get('proxy_count'), 0), format_traffic=format_traffic)
 
 
 @app.route('/favicon.ico')
