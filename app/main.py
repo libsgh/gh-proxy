@@ -60,9 +60,9 @@ requests.sessions.default_headers = lambda: CaseInsensitiveDict()
 def index():
     if 'q' in request.args:
         return redirect('/' + request.args.get('q'))
-    format_traffic = format_bytes(int(cache.get('proxy_traffic'), 0))
+    format_traffic = format_bytes(int(cache.get('proxy_traffic') or 0))
     current_year = datetime.now().year
-    return render_template('index.html', current_year=current_year, proxy_count=int(cache.get('proxy_count'), 0), format_traffic=format_traffic)
+    return render_template('index.html', current_year=current_year, proxy_count=int(cache.get('proxy_count') or 0), format_traffic=format_traffic)
 
 
 @app.route('/favicon.ico')
@@ -206,8 +206,8 @@ def proxy(u, allow_redirects=False):
                 headers['Location'] = '/' + _location
             else:
                 return proxy(_location, True)
-        cache.set('proxy_count', int(cache.get('proxy_count')) + 1)
-        cache.set('proxy_traffic', int(cache.get('proxy_traffic')) + content_length)
+        cache.set('proxy_count', int(cache.get('proxy_count') or 0) + 1)
+        cache.set('proxy_traffic', int(cache.get('proxy_traffic') or 0) + content_length)
         return Response(generate(), headers=headers, status=r.status_code)
     except Exception as e:
         headers['content-type'] = 'text/html; charset=UTF-8'
