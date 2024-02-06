@@ -198,9 +198,6 @@ def proxy(u, allow_redirects=False):
             content_length = int(r.headers['Content-length'])
         if 'Content-length' in r.headers and content_length > size_limit:
             return redirect(u + request.url.replace(request.base_url, '', 1))
-        def generate():
-            for chunk in iter_content(r, chunk_size=CHUNK_SIZE):
-                yield chunk
         if 'Location' in r.headers:
             _location = r.headers.get('Location')
             if check_url(_location):
@@ -209,11 +206,17 @@ def proxy(u, allow_redirects=False):
                 return proxy(_location, True)
         cache.set('proxy_count', int(cache.get('proxy_count') or 0) + 1)
         b = generate()
-        cache.set('proxy_traffic', int(cache.get('proxy_traffic') or 0) + len(b))
+        cache.set('proxy_traffic', int(cache.get('proxy_traffic') or 0) + b)
         return Response(b, headers=headers, status=r.status_code)
     except Exception as e:
         headers['content-type'] = 'text/html; charset=UTF-8'
         return Response('server error ' + str(e), status=500, headers=headers)
+def generate():
+    total_size = 0
+    for chunk in iter_content(r, chunk_size=CHUNK_SIZE):
+        total_size += len(chunk)
+        yield chunk
+    return total_size
 def format_bytes(size):
     power = 2**10
     n = 0
