@@ -205,13 +205,13 @@ def proxy(u, allow_redirects=False):
             else:
                 return proxy(_location, True)
         cache.set('proxy_count', int(cache.get('proxy_count') or 0) + 1)
-        b = generate()
+        b = generate(r)
         cache.set('proxy_traffic', int(cache.get('proxy_traffic') or 0) + b)
         return Response(b, headers=headers, status=r.status_code)
     except Exception as e:
         headers['content-type'] = 'text/html; charset=UTF-8'
         return Response('server error ' + str(e), status=500, headers=headers)
-def generate():
+def generate(r):
     total_size = 0
     for chunk in iter_content(r, chunk_size=CHUNK_SIZE):
         total_size += len(chunk)
