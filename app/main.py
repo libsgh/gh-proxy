@@ -35,7 +35,7 @@ pass_list = str(os.environ.get('PASS_LIST', '''
 '''))
 
 HOST = str(os.environ.get('HOST', '127.0.0.1'))  # 监听地址，建议监听本地然后由web服务器反代
-PORT = int(os.environ.get('PORT', 80))  # 监听端口
+PORT = int(os.environ.get('PORT', 5006))  # 监听端口
 #ASSET_URL = 'https://hunshcn.github.io/gh-proxy'  # 主页
 
 white_list = [tuple([x.replace(' ', '') for x in i.split('/')]) for i in white_list.split('\n') if i]
@@ -208,8 +208,9 @@ def proxy(u, allow_redirects=False):
             else:
                 return proxy(_location, True)
         cache.set('proxy_count', int(cache.get('proxy_count') or 0) + 1)
-        cache.set('proxy_traffic', int(cache.get('proxy_traffic') or 0) + content_length)
-        return Response(generate(), headers=headers, status=r.status_code)
+        b = generate()
+        cache.set('proxy_traffic', int(cache.get('proxy_traffic') or 0) + len(b))
+        return Response(b, headers=headers, status=r.status_code)
     except Exception as e:
         headers['content-type'] = 'text/html; charset=UTF-8'
         return Response('server error ' + str(e), status=500, headers=headers)
