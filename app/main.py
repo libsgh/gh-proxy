@@ -141,7 +141,6 @@ def gist_handler(u):
 
 @app.route('/<path:u>', methods=['GET', 'POST'])
 def handler(u):
-    u = quote(u, safe='/:')
     u = u if u.startswith('http') else 'https://' + u
     if u.rfind('://', 3, 9) == -1:
         u = u.replace('s:/', 's://', 1)  # uwsgi会将//传递为/
@@ -181,6 +180,7 @@ def handler(u):
             if url.startswith('https:/') and not url.startswith('https://'):
                 url = 'https://' + url[7:]
             return redirect(url)
+        u = quote(u, safe='/:')
         return proxy(u)
 @app.after_request
 def remove_content_security_policy(response):
