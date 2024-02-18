@@ -141,6 +141,7 @@ def gist_handler(u):
 
 @app.route('/<path:u>', methods=['GET', 'POST'])
 def handler(u):
+    u = quote(u, safe='/:')
     u = u if u.startswith('http') else 'https://' + u
     if u.rfind('://', 3, 9) == -1:
         u = u.replace('s:/', 's://', 1)  # uwsgi会将//传递为/
@@ -194,7 +195,6 @@ def proxy(u, allow_redirects=False):
         url = u + request.url.replace(request.base_url, '', 1)
         if url.startswith('https:/') and not url.startswith('https://'):
             url = 'https://' + url[7:]
-        url = quote(url, safe='/:')
         r = requests.request(method=request.method, url=url, data=request.data, headers=r_headers, stream=True, allow_redirects=allow_redirects)
         headers = dict(r.headers)
         content_length = 0
