@@ -36,7 +36,7 @@ pass_list = str(os.environ.get('PASS_LIST', '''
 '''))
 
 HOST = str(os.environ.get('HOST', '127.0.0.1'))  # 监听地址，建议监听本地然后由web服务器反代
-PORT = int(os.environ.get('PORT', 80))  # 监听端口
+PORT = int(os.environ.get('PORT', 5006))  # 监听端口
 #ASSET_URL = 'https://hunshcn.github.io/gh-proxy'  # 主页
 
 white_list = [tuple([x.replace(' ', '') for x in i.split('/')]) for i in white_list.split('\n') if i]
@@ -181,8 +181,10 @@ def handler(u):
                 url = 'https://' + url[7:]
             return redirect(url)
         return proxy(u)
-
-
+@app.after_request
+def remove_content_security_policy(response):
+    response.headers.pop('Content-Security-Policy', None)
+    return response
 def proxy(u, allow_redirects=False):
     headers = {}
     r_headers = dict(request.headers)
