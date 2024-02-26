@@ -65,7 +65,7 @@ def index():
         return redirect('/' + request.args.get('q'))
     format_traffic = format_bytes(int(cache.get('proxy_traffic') or 0))
     current_year = datetime.now().year
-    return render_template('index.html', current_year=current_year, proxy_count=int(cache.get('proxy_count') or 0), format_traffic=format_traffic)
+    return render_template('index.html', current_year=current_year, proxy_count=int(cache.get('proxy_count') or 0), format_traffic=format_traffic, rank = get_rank())
 
 
 @app.route('/favicon.ico')
@@ -181,6 +181,10 @@ def handler(u):
                 url = 'https://' + url[7:]
             return redirect(url)
         u = quote(u, safe='/:')
+        if len(m) == 2:
+            user = m[0]
+            repo = m[1]
+            add_rank(f"{user}/{repo}")
         return proxy(u)
 @app.after_request
 def remove_content_security_policy(response):
@@ -228,6 +232,26 @@ def format_bytes(size):
         size /= power
         n += 1
     return f"{size:.2f} {power_labels[n]}"
+
+def add_rank(repo):
+    ck = 'repo_' + repo
+    cache.set(ck, int(cache.get(ck) or 0) + 1)
+    rks = get_rank()
+    for key in cache.iterkeys():
+        if key.startswith("repo_"):
+            cache.delete(key)
+    for rk in rks:
+        cache.set(rk[0], rk[1])
+
+def get_rank():
+    rank_keys = []
+    for key in cache.iterkeys():
+        if key.startswith("repo_"):
+            rank_keys.append(key)
+    scores = [cache[rk] for rk in rank_keys]
+    leaderboard = sorted(zip(rank_keys, scores), key=lambda x: x[1], reverse=True)[:20]
+    return leaderboard
+
 app.debug = True
 if __name__ == '__main__':
     cache.set('proxy_count', 0)
