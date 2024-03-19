@@ -15,6 +15,7 @@ from datetime import datetime
 from diskcache import Cache
 from urllib.parse import quote
 import os
+import base64
 auth = HTTPBasicAuth()
 # 简单统计：代理请求次数
 cache = Cache('/app/data')
@@ -80,6 +81,15 @@ def index():
     format_traffic = format_bytes(int(cache.get('proxy_traffic') or 0))
     current_year = datetime.now().year
     is_admin = False
+    if 'Authorization' in request.headers:
+            auth = str(request.headers['Authorization'])
+            auth_bytes = base64.b64decode(auth.lstrip('Basic '))
+            auth_str = auth_bytes.decode('utf-8')
+            uname = auth_str.split(':')[0]
+            pwd = auth_str.split(':')[1]
+            if uname == 'admin' and  get_config('ADMIN_PASSWORD', '1234') == pwd:
+                is_admin = True
+            print(auth_str)
     return render_template('index.html', current_year=current_year, proxy_count=int(cache.get('proxy_count') or 0), format_traffic=format_traffic, is_admin=is_admin, rank = get_rank(), config=get_all_config())
 
 @app.route('/admin')
@@ -161,7 +171,6 @@ def unauthorized():
 def favicon():
     return send_from_directory(app.static_folder,
                                'favicon.png', mimetype='image/vnd.microsoft.icon')
-
 
 def iter_content(self, chunk_size=1, decode_unicode=False):
     """rewrite requests function, set decode_content with False"""
