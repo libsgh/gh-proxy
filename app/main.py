@@ -89,7 +89,6 @@ def index():
             pwd = auth_str.split(':')[1]
             if uname == 'admin' and  get_config('ADMIN_PASSWORD', '1234') == pwd:
                 is_admin = True
-            print(auth_str)
     return render_template('index.html', current_year=current_year, proxy_count=int(cache.get('proxy_count') or 0), format_traffic=format_traffic, is_admin=is_admin, rank = get_rank(), config=get_all_config())
 
 @app.route('/admin')
