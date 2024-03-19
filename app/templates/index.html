@@ -22,7 +22,7 @@
       crossorigin="anonymous" />
     <style>
       .speed-prefix {
-        color: red;
+        color: rgb(0, 119, 255);
       }
       .ms-6 {
         margin-left: 4rem!important;
@@ -70,6 +70,7 @@
                     list="datalistOptions"
                     placeholder="键入Github文件链接"
                     pattern="^((https|http):\/\/)?(github\.com\/.+?\/.+?\/(?:releases|archive|blob|raw|suites)|((?:raw|gist)\.(?:githubusercontent|github)\.com))\/.+$"
+                    oninput="checkInputValidity(this)"
                     required />
                 <button class="btn btn-success rounded-end align-items-center" type="submit">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-lightning" viewBox="0 0 16 16">
@@ -104,11 +105,19 @@
                     <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/>
                   </svg>
                 </button>
-                <button id="rank-btn" type="button" class="btn btn-outline-secondary btn-sm float-end" data-bs-toggle="offcanvas" href="#rankContent">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-line-fill" viewBox="0 0 16 16">
-                    <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2z"/>
-                  </svg>
-                </button>
+                {% if is_admin %}
+                  <button id="rank-btn" type="button" class="btn btn-outline-secondary btn-sm float-end" data-bs-toggle="offcanvas" href="#rankContent">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-line-fill" viewBox="0 0 16 16">
+                      <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2z"/>
+                    </svg>
+                  </button>
+                  <button id="conf-btn" type="button" class="btn btn-outline-secondary btn-sm float-end" data-bs-toggle="offcanvas" href="#confContent">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
+                      <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
+                      <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/>
+                    </svg>
+                  </button>
+                {% endif %}
               </div>
               <h4 class="card-title" class="fw-bold">支持格式</h4>
               <p class="text-start">
@@ -154,6 +163,7 @@
           </form>
         </div>
       </div>
+      {% if is_admin %}
       <div class="offcanvas offcanvas-end" tabindex="-1" id="rankContent" aria-labelledby="offcanvasExampleLabel">
         <div class="offcanvas-header">
           <h5 class="offcanvas-title" id="offcanvasExampleLabel">加速排行</h5>
@@ -163,9 +173,15 @@
            <ul class="list-group list-group-numbered">
             {% for r in rank %}
                 <li class="list-group-item d-flex justify-content-between align-items-start">
-                  
                   <div class="ms-2 me-auto">
-                    <div class="fw-bold"> {{ r[0].lstrip('repo_') }}</div>
+                    <div class="{% if r[2] %}fw-bold{% else %}fw-light{% endif %}"> {{ r[0].lstrip('repo_') }}
+                      {% if r[2] %}{% else %}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-slash-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="M11.354 4.646a.5.5 0 0 0-.708 0l-6 6a.5.5 0 0 0 .708.708l6-6a.5.5 0 0 0 0-.708z"/>
+                     </svg>
+                      {% endif %}
+                    </div>
                   </div>
                   <span class="badge bg-primary rounded-pill">{{ r[1] }}</span>
                 </li>
@@ -173,6 +189,55 @@
             </ul>
         </div>
       </div>
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="confContent" aria-labelledby="offcanvasExampleLabel2">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasExampleLabel2">配置</h5>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="mb-12">
+              <label for="adminTextarea" class="form-label">管理密码（ADMIN_PASSWORD）</label>
+              <input type="email" class="form-control" id="adminTextarea" placeholder="默认：1234" value="{{config.ADMIN_PASSWORD}}">
+            </div>
+            <div class="mb-12 mt-2">
+              <label for="sizeTextarea" class="form-label">文件大小限制（SIZE_LIMIT）</label>
+              <input type="text" class="form-control" id="sizeTextarea" placeholder="默认：999MB" value="{{config.SIZE_LIMIT}}">
+            </div>
+            <div class="mb-12 mt-2">
+              <label for="whiteTextarea" class="form-label">白名单（WHITE_LIST）</label>
+              <textarea class="form-control" id="whiteTextarea" rows="5" placeholder="每个规则一行，user或user/repo">{{config.WHITE_LIST}}</textarea>
+            </div>
+            <div class="mb-12 mt-2">
+              <label for="blackTextarea" class="form-label">黑名单（BLACK_LIST）</label>
+              <textarea class="form-control" id="blackTextarea" rows="5" placeholder="每个规则一行，user或user/repo">{{config.BLACK_LIST}}</textarea>
+            </div>
+             <div class="mb-12 mt-2">
+              <label for="passTextarea" class="form-label">跳过代理（PASS_LIST）</label>
+              <textarea class="form-control" id="passTextarea" rows="5" placeholder="每个规则一行，user或user/repo">{{config.PASS_LIST}}</textarea>
+            </div>
+            <div class="mt-2 form-check form-switch">
+              <input class="form-check-input" type="checkbox" role="switch" id="jsdelivrCheck" {% if config.JSDELIVR==1 %}checked{% endif %} >
+              <label class="form-check-label" for="jsdelivrCheck">分支文件jsdelivr</label>
+            </div>
+             <div class="mb-12 mt-2">
+              <div class="d-grid gap-2">
+               <button type="button" class="btn btn-outline-primary" onclick="saveConfig()">保存</button>
+               <button type="button" class="btn btn-outline-danger" data-bs-dismiss="offcanvas">取消</button>
+              </div>
+            </div>
+        </div>
+      </div>
+      <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body">
+              操作成功！
+            </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+      </div>
+      {% endif %}
     </div>
     <footer class="navbar-fixed-bottom" style="height: 5vh;">
         <p class="text-center text-muted">
@@ -255,6 +320,55 @@
             window.open(url);
         }
         return false;
+      }
+      function saveConfig(){
+          var api = "/admin/api/config/save";
+          var jsdelivrChecked = document.getElementById('jsdelivrCheck').checked;
+          var jsonData = {
+            admin_password:  document.getElementById('adminTextarea').value,
+            size_limit:  document.getElementById('sizeTextarea').value,
+            white_list:  document.getElementById('whiteTextarea').value,
+            black_list:  document.getElementById('blackTextarea').value,
+            pass_list:  document.getElementById('passTextarea').value,
+            jsdelivr:  jsdelivrChecked?1:0
+          };
+          const toastLiveExample = document.getElementById('liveToast');
+          const toast = new bootstrap.Toast(toastLiveExample);
+          toast.show();
+          postJSONData(api, jsonData);
+      }
+      function postJSONData(url, data) {
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        })
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error('Network response was not ok.');
+        })
+        .then(data => {
+        })
+        .catch(error => {
+          console.error("Error fetching data: ", error);
+        });
+      }
+      function checkInputValidity(inputElement) {
+        var pattern = inputElement.pattern;
+        var value = inputElement.value;
+        var url = locationUri + document.getElementsByName("ghq")[0].value
+        if (value.match(pattern)) {
+          document.getElementById('valid-feedback').innerHTML = url;
+          document.getElementById('valid-feedback').style.display = 'block';
+          document.getElementById('invalid-feedback').style.display = 'none';
+        } else {
+          document.getElementById('valid-feedback').style.display = 'none';
+          document.getElementById('invalid-feedback').style.display = 'block';
+        }
       }
     </script>
   </body>

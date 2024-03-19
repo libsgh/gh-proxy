@@ -2,7 +2,8 @@
 import re
 
 import requests
-from flask import Flask, render_template, Response, redirect, request, send_from_directory
+from flask import Flask, render_template, Response, redirect, request, send_from_directory, jsonify, make_response
+from flask_httpauth import HTTPBasicAuth
 from requests.exceptions import (
     ChunkedEncodingError,
     ContentDecodingError, ConnectionError, StreamConsumedError)
@@ -14,11 +15,22 @@ from datetime import datetime
 from diskcache import Cache
 from urllib.parse import quote
 import os
-
+auth = HTTPBasicAuth()
+# 简单统计：代理请求次数
+cache = Cache('/app/data')
+def get_config(key, defv):
+    value = cache.get(key)
+    return value if value is not None else os.environ.get(key, defv)
+def set_config(key, value):
+    cache.set(key, value)
 # config
 # 分支文件使用jsDelivr镜像的开关，0为关闭，默认关闭
-jsdelivr = int(os.environ.get('JSDELIVR', 0))
-size_limit = int(os.environ.get('SIZE_LIMIT', 1024 * 1024 * 1024 * 999))  # 允许的文件大小，默认999GB，相当于无限制了 https://github.com/hunshcn/gh-proxy/issues/8
+jsdelivr = int(get_config('JSDELIVR', 0))
+KB = 1024
+MB = KB ** 2  # 1024 * 1024
+GB = KB ** 3  # 1024 * 1024 * 1024
+TB = KB ** 4  # 1024 * 1024 * 1024 * 1024
+size_limit = int(get_config('SIZE_LIMIT', GB * 999))  # 允许的文件大小，默认999GB，相当于无限制了 https://github.com/hunshcn/gh-proxy/issues/8
 
 """
   先生效白名单再匹配黑名单，pass_list匹配到的会直接302到jsdelivr而忽略设置
@@ -28,15 +40,13 @@ size_limit = int(os.environ.get('SIZE_LIMIT', 1024 * 1024 * 1024 * 999))  # 允�
   user1/repo1 # 封禁user1的repo1
   */repo1 # 封禁所有叫做repo1的仓库
 """
-white_list = str(os.environ.get('WHITE_LIST', '''
-'''))
-black_list = str(os.environ.get('BLACK_LIST', '''
-'''))
-pass_list = str(os.environ.get('PASS_LIST', '''
-'''))
+
+white_list = str(get_config('WHITE_LIST', ''))
+black_list = str(get_config('BLACK_LIST', ''))
+pass_list = str(get_config('PASS_LIST', ''))
 
 HOST = str(os.environ.get('HOST', '127.0.0.1'))  # 监听地址，建议监听本地然后由web服务器反代
-PORT = int(os.environ.get('PORT', 80))  # 监听端口
+PORT = int(os.environ.get('PORT', 5006))  # 监听端口
 #ASSET_URL = 'https://hunshcn.github.io/gh-proxy'  # 主页
 
 white_list = [tuple([x.replace(' ', '') for x in i.split('/')]) for i in white_list.split('\n') if i]
@@ -53,11 +63,15 @@ exp4 = re.compile(r'^(?:https?://)?raw\.(?:githubusercontent|github)\.com/(?P<au
 exp5 = re.compile(r'^(?:https?://)?gist\.(?:githubusercontent|github)\.com/(?P<author>.+?)/.+?/.+$')
 exp6 = re.compile(r'^(?:https?://)?git\.io/.*$')
 exp7 = re.compile(r'^(?:https?://)?api\.github\.com/.*$')
-# 简单统计：代理请求次数
-cache = Cache('/app/data')
+
 
 requests.sessions.default_headers = lambda: CaseInsensitiveDict()
 
+
+@auth.verify_password
+def verify_password(username, password):
+    if username == 'admin' and get_config('ADMIN_PASSWORD', '1234') == password:
+        return username
 
 @app.route('/')
 def index():
@@ -65,8 +79,83 @@ def index():
         return redirect('/' + request.args.get('q'))
     format_traffic = format_bytes(int(cache.get('proxy_traffic') or 0))
     current_year = datetime.now().year
-    return render_template('index.html', current_year=current_year, proxy_count=int(cache.get('proxy_count') or 0), format_traffic=format_traffic, rank = get_rank())
+    is_admin = False
+    return render_template('index.html', current_year=current_year, proxy_count=int(cache.get('proxy_count') or 0), format_traffic=format_traffic, is_admin=is_admin, rank = get_rank(), config=get_all_config())
 
+@app.route('/admin')
+@auth.login_required
+def admin():
+    format_traffic = format_bytes(int(cache.get('proxy_traffic') or 0))
+    current_year = datetime.now().year
+    is_admin = True
+    return render_template('index.html', current_year=current_year, proxy_count=int(cache.get('proxy_count') or 0), format_traffic=format_traffic, is_admin=is_admin, rank = get_rank(), config=get_all_config())
+
+@app.route('/admin/api/config/save', methods=['POST'])
+@auth.login_required
+def saveConfig():
+    if request.is_json:
+        try:
+            # 解析JSON数据
+            data = request.get_json()
+            set_config('SIZE_LIMIT', convert_human_readable_to_bytes(data['size_limit']))
+            global size_limit
+            size_limit = convert_human_readable_to_bytes(data['size_limit'])
+            set_config('ADMIN_PASSWORD', data['admin_password'])
+            set_config('WHITE_LIST', data['white_list'])
+            global white_list
+            white_list = [tuple([x.replace(' ', '') for x in i.split('/')]) for i in data['white_list'].split('\n') if i]
+            set_config('BLACK_LIST', data['black_list'])
+            global black_list
+            black_list = [tuple([x.replace(' ', '') for x in i.split('/')]) for i in data['black_list'].split('\n') if i]
+            set_config('PASS_LIST', data['pass_list'])
+            global pass_list
+            pass_list = [tuple([x.replace(' ', '') for x in i.split('/')]) for i in data['pass_list'].split('\n') if i]
+            set_config('JSDELIVR', data['jsdelivr'])
+            global jsdelivr
+            jsdelivr = data['jsdelivr']
+            response = {
+                'code': '200',
+                'message': data
+            }
+            return jsonify(response), 200
+        except:
+            response = {'code': '400', 'message': 'Invalid JSON'}
+            return jsonify(response), 400
+    else:
+        response = {'code': '400', 'message': 'Request content-type must be application/json'}
+        return jsonify(response), 400
+def get_all_config():
+    return {'WHITE_LIST':str(get_config('WHITE_LIST', '')), 'BLACK_LIST':str(get_config('BLACK_LIST', '')), 'PASS_LIST':str(get_config('PASS_LIST', '')), 'ADMIN_PASSWORD':str(get_config('ADMIN_PASSWORD', '1234')), 'SIZE_LIMIT':bytes_to_readable(size_limit), 'JSDELIVR':jsdelivr}
+
+def convert_human_readable_to_bytes(size):
+    units = {"KB": KB, "MB": MB, "GB": GB, "TB": TB}
+    size = size.upper()
+    if not any(unit in size for unit in units):
+        raise ValueError("Size should specify the unit (e.g., '10 MB', '20 GB').")
+
+    # 分离数字和单位
+    number, unit = [string.strip() for string in size.split()]
+    number = float(number)  # 将字符串转换为浮点数
+
+    if unit in units:
+        return int(number * units[unit])
+    else:
+        raise ValueError("Unrecognized size unit. Available units: KB, MB, GB, TB.")
+
+def bytes_to_readable(bytes_size):
+    # 定义转换的单位
+    units = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB"]
+
+    # 计算转换后的大小
+    for unit in units:
+        if bytes_size < 1024:
+            return f"{bytes_size:.2f}".rstrip('0').rstrip('.') + f" {unit}"
+        bytes_size /= 1024
+    return f"{bytes_size:.2f}".rstrip('0').rstrip('.') + f" {unit}"
+
+@auth.error_handler
+def unauthorized():
+    return make_response(jsonify({"code": 401, "error": "Unauthorized access"}), 401)
 
 @app.route('/favicon.ico')
 def favicon():
@@ -250,7 +339,24 @@ def get_rank():
             rank_keys.append(key)
     scores = [cache[rk] for rk in rank_keys]
     leaderboard = sorted(zip(rank_keys, scores), key=lambda x: x[1], reverse=True)[:20]
-    return leaderboard
+    new_leaderboard = []
+    for l in leaderboard:
+        r =  l[0].lstrip('repo_')
+        p = True
+        if white_list:
+            for w in white_list:
+                if w[0] == "*" or r.startswith(w[0]+"/") or (len(w)>2 and r == w[0]+"/"+w[1]):
+                   p = True
+                   break 
+            p = False
+        else:
+             for b in black_list:
+                if b[0] == "*" or r.startswith(b[0]+"/") or (len(b)>2 and r == b[0]+"/"+b[1]):
+                   p = False
+                   break
+        new_l = l + (p,)
+        new_leaderboard.append(new_l)
+    return new_leaderboard
 
 app.debug = True
 if __name__ == '__main__':
