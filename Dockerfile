@@ -2,7 +2,7 @@ FROM guysoft/uwsgi-nginx:python3.7
 
 LABEL maintainer="hunshcn <hunsh.cn@gmail.com>"
 
-RUN pip install flask requests diskcache flask-httpauth
+RUN pip install flask requests diskcache Flask-JWT-Extended
 
 COPY ./app /app
 WORKDIR /app

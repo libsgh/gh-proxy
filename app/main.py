@@ -3,7 +3,6 @@ import re
 
 import requests
 from flask import Flask, render_template, Response, redirect, request, send_from_directory, jsonify, make_response
-from flask_httpauth import HTTPBasicAuth
 from requests.exceptions import (
     ChunkedEncodingError,
     ContentDecodingError, ConnectionError, StreamConsumedError)
@@ -11,12 +10,12 @@ from requests.utils import (
     stream_decode_response_unicode, iter_slices, CaseInsensitiveDict)
 from urllib3.exceptions import (
     DecodeError, ReadTimeoutError, ProtocolError)
-from datetime import datetime
+from datetime import datetime, timezone
 from diskcache import Cache
 from urllib.parse import quote
 import os
-import base64
-auth = HTTPBasicAuth()
+from flask_jwt_extended import (JWTManager, jwt_required, create_access_token, verify_jwt_in_request, set_access_cookies, get_jwt)
+from datetime import timedelta
 # 简单统计：代理请求次数
 cache = Cache('/app/data')
 def get_config(key, defv):
@@ -54,6 +53,11 @@ white_list = [tuple([x.replace(' ', '') for x in i.split('/')]) for i in white_l
 black_list = [tuple([x.replace(' ', '') for x in i.split('/')]) for i in black_list.split('\n') if i]
 pass_list = [tuple([x.replace(' ', '') for x in i.split('/')]) for i in pass_list.split('\n') if i]
 app = Flask(__name__, static_folder='static')
+# 设置 Flask-JWT-Extended 扩展
+app.config["JWT_SECRET_KEY"] = "gh-proxy-libs-jwt"
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=30)
+app.config['JWT_COOKIE_CSRF_PROTECT'] = False
+jwt = JWTManager(app)
 CHUNK_SIZE = 1024 * 10
 # index_html = requests.get(ASSET_URL, timeout=10).text
 # icon_r = requests.get(ASSET_URL + '/favicon.ico', timeout=10).content
@@ -68,11 +72,29 @@ exp7 = re.compile(r'^(?:https?://)?api\.github\.com/.*$')
 
 requests.sessions.default_headers = lambda: CaseInsensitiveDict()
 
+password_changed_at = datetime.now(timezone.utc).timestamp()
 
-@auth.verify_password
-def verify_password(username, password):
-    if username == 'admin' and get_config('ADMIN_PASSWORD', '1234') == password:
-        return username
+@app.route("/admin/api/login", methods=["POST"])
+def login():
+    username = request.json.get("username", None)
+    password = request.json.get("password", None)
+    if username != "admin" or password != get_config('ADMIN_PASSWORD', '1234'):
+        return jsonify({"code": 401, "message": "用户名或密码错误"}), 401
+    global password_changed_at
+    password_changed_at = datetime.now(timezone.utc).timestamp()
+    access_token = create_access_token(identity=username, additional_claims={'password_changed_at': password_changed_at})
+    response = jsonify({"code":200, "message": "登录成功"})
+    set_access_cookies(response, access_token)
+    return response
+
+def check_pwd():
+    claims = get_jwt()
+    if 'password_changed_at' in claims:
+        if claims['password_changed_at'] != password_changed_at:
+            return False
+    else:
+        return False
+    return True
 
 @app.route('/')
 def index():
@@ -81,27 +103,19 @@ def index():
     format_traffic = format_bytes(int(cache.get('proxy_traffic') or 0))
     current_year = datetime.now().year
     is_admin = False
-    if 'Authorization' in request.headers:
-            auth = str(request.headers['Authorization'])
-            auth_bytes = base64.b64decode(auth.lstrip('Basic '))
-            auth_str = auth_bytes.decode('utf-8')
-            uname = auth_str.split(':')[0]
-            pwd = auth_str.split(':')[1]
-            if uname == 'admin' and  get_config('ADMIN_PASSWORD', '1234') == pwd:
-                is_admin = True
-    return render_template('index.html', current_year=current_year, proxy_count=int(cache.get('proxy_count') or 0), format_traffic=format_traffic, is_admin=is_admin, rank = get_rank(), config=get_all_config())
-
-@app.route('/admin')
-@auth.login_required
-def admin():
-    format_traffic = format_bytes(int(cache.get('proxy_traffic') or 0))
-    current_year = datetime.now().year
-    is_admin = True
+    try:
+        verify_jwt_in_request(locations=["cookies"])
+        is_admin = check_pwd()
+    except Exception as e:
+        is_admin = False
     return render_template('index.html', current_year=current_year, proxy_count=int(cache.get('proxy_count') or 0), format_traffic=format_traffic, is_admin=is_admin, rank = get_rank(), config=get_all_config())
 
 @app.route('/admin/api/config/save', methods=['POST'])
-@auth.login_required
+@jwt_required(locations=["cookies"])
 def saveConfig():
+    is_admin = check_pwd()
+    if is_admin == False:
+         return jsonify({"code":401, "message": "身份验证已失效，请重新登录"}), 401
     if request.is_json:
         try:
             # 解析JSON数据
@@ -109,7 +123,10 @@ def saveConfig():
             set_config('SIZE_LIMIT', convert_human_readable_to_bytes(data['size_limit']))
             global size_limit
             size_limit = convert_human_readable_to_bytes(data['size_limit'])
-            set_config('ADMIN_PASSWORD', data['admin_password'])
+            if get_config('ADMIN_PASSWORD', '1234')!=data['admin_password']:
+                set_config('ADMIN_PASSWORD', data['admin_password'])
+                global password_changed_at
+                password_changed_at = datetime.now(timezone.utc).timestamp()
             set_config('WHITE_LIST', data['white_list'])
             global white_list
             white_list = [tuple([x.replace(' ', '') for x in i.split('/')]) for i in data['white_list'].split('\n') if i]
@@ -123,7 +140,7 @@ def saveConfig():
             global jsdelivr
             jsdelivr = data['jsdelivr']
             response = {
-                'code': '200',
+                'code': 200,
                 'message': data
             }
             return jsonify(response), 200
@@ -161,10 +178,6 @@ def bytes_to_readable(bytes_size):
             return f"{bytes_size:.2f}".rstrip('0').rstrip('.') + f" {unit}"
         bytes_size /= 1024
     return f"{bytes_size:.2f}".rstrip('0').rstrip('.') + f" {unit}"
-
-@auth.error_handler
-def unauthorized():
-    return make_response(jsonify({"code": 401, "error": "Unauthorized access"}), 401)
 
 @app.route('/favicon.ico')
 def favicon():
