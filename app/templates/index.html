@@ -235,25 +235,26 @@
         </div>
       </div>
       {% endif %}
-      <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+      <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" >
+        <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="loginModalLabel">用户登录</h5>
+              <h5 class="modal-title" id="loginModalLabel">配置管理</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
               <!-- Login form -->
-              <form id="loginForm">
-                <div class="mb-3">
-                  <label for="username" class="form-label">用户名</label>
-                  <input type="text" class="form-control" id="username" required>
+              <form id="loginForm" class="needs-validation" novalidate>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">用户名</span>
+                    <input type="text" class="form-control" id="username" required>
                 </div>
-                <div class="mb-3">
-                  <label for="password" class="form-label">密码</label>
-                  <input type="password" class="form-control" id="password" required>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">密码</span>
+                    <input type="password" class="form-control" id="password" required>
                 </div>
-                <button type="button" class="btn btn-primary"  onclick="promptBasicAuth()">登录</button>
+                <button id="loginButton" type="submit" class="btn btn-outline-primary">登录</button>
+                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">取消</button>
               </form>
             </div>
           </div>
@@ -314,7 +315,6 @@
             localStorage.setItem("gh-theme", "auto");
         }
         document.querySelector("#logo-svg").setAttribute("src", isDark ? "/static/favicon-dark.svg": "/static/favicon.svg");
-       
       }
       function setTheme(){
         var curTheme = localStorage.getItem("gh-theme");
@@ -381,7 +381,7 @@
           if (response.ok) {
             return response.json();
           }else{
-            notify("登录已过期，请重新登录");
+            notify("登录失败，请重新登录");
           }
           throw new Error('Network response was not ok.');
         })
@@ -410,7 +410,18 @@
           document.getElementById('invalid-feedback').style.display = 'block';
         }
       }
-      function promptBasicAuth() {
+      document.getElementById('loginForm').addEventListener('submit', function(event) {
+        const form = document.getElementById('loginForm');
+        if (!form.checkValidity()) {
+          form.classList.add('was-validated');
+        }else{
+          authLogin();
+        }
+        event.preventDefault();
+        event.stopPropagation();
+        
+      }, false);
+      function authLogin() {
           var user = document.getElementById('username').value;
           var pass = document.getElementById('password').value;
           if (user !== null && pass !== null) {
