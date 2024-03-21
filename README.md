@@ -6,7 +6,7 @@ github release、archive 以及项目文件的加速项目，支持 clone，有 
 
 ## 演示
 
-[https://gh.noki.eu.org/](https://gh.noki.eu.org/)
+[https://gh.noki.eu.org](https://gh.noki.eu.org)
 
 演示站为公益服务，如有大规模使用需求请自行部署
 
@@ -14,11 +14,11 @@ github release、archive 以及项目文件的加速项目，支持 clone，有 
 
 1. 首页不再依赖于外部服务
 2. 首页样式优化：自动明暗主题
-3. 直链缩短：github、raw、gist 等同于 https://github.com、 https://raw.githubusercontent.com、 https://gist.githubusercontent.com
+3. 直链缩短：github、raw、gist 等同于 https://github.com 、 https://raw.githubusercontent.com 、 https://gist.githubusercontent.com
 4. 简单的代理次数、代理流量统计
 5. 支持 git.io、支持 api.github.com
 6. 代理加速排行，方便管理
-7. 增加配置功能：可在页面进行配置管理，包括黑名单(black_list)、白名单(white_list)、跳过列表(pass_list)、jsdelivr、文件大小限制(size_limit) 限制等，管理密码默认：1234，部署后请立即修改默认密码！
+7. 增加配置功能：可在页面进行配置管理，包括黑名单(black_list)、白名单(white_list)、跳过列表(pass_list)、jsdelivr、文件大小限制(size_limit) 等，管理密码默认：1234，部署后请立即修改默认密码！
 
 ## python 版本和 cf worker 版本差异
 
