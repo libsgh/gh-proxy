@@ -72,16 +72,13 @@ exp7 = re.compile(r'^(?:https?://)?api\.github\.com/.*$')
 
 requests.sessions.default_headers = lambda: CaseInsensitiveDict()
 
-password_changed_at = datetime.now(timezone.utc).timestamp()
-
 @app.route("/admin/api/login", methods=["POST"])
 def login():
     username = request.json.get("username", None)
     password = request.json.get("password", None)
+    password_changed_at = cache.get("password_changed_at", datetime.now(timezone.utc).timestamp())
     if username != "admin" or password != get_config('ADMIN_PASSWORD', '1234'):
         return jsonify({"code": 401, "message": "用户名或密码错误"}), 401
-    global password_changed_at
-    password_changed_at = datetime.now(timezone.utc).timestamp()
     access_token = create_access_token(identity=username, additional_claims={'password_changed_at': password_changed_at})
     response = jsonify({"code":200, "message": "登录成功"})
     set_access_cookies(response, access_token)
@@ -89,6 +86,7 @@ def login():
 
 def check_pwd():
     claims = get_jwt()
+    password_changed_at = cache.get("password_changed_at", datetime.now(timezone.utc).timestamp())
     if 'password_changed_at' in claims:
         if claims['password_changed_at'] != password_changed_at:
             return False
@@ -123,10 +121,9 @@ def saveConfig():
             set_config('SIZE_LIMIT', convert_human_readable_to_bytes(data['size_limit']))
             global size_limit
             size_limit = convert_human_readable_to_bytes(data['size_limit'])
-            if get_config('ADMIN_PASSWORD', '1234')!=data['admin_password']:
+            if get_config('ADMIN_PASSWORD', '1234') != data['admin_password']:
                 set_config('ADMIN_PASSWORD', data['admin_password'])
-                global password_changed_at
-                password_changed_at = datetime.now(timezone.utc).timestamp()
+                cache.set('password_changed_at', datetime.now(timezone.utc).timestamp())
             set_config('WHITE_LIST', data['white_list'])
             global white_list
             white_list = [tuple([x.replace(' ', '') for x in i.split('/')]) for i in data['white_list'].split('\n') if i]
