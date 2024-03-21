@@ -76,7 +76,7 @@ requests.sessions.default_headers = lambda: CaseInsensitiveDict()
 def login():
     username = request.json.get("username", None)
     password = request.json.get("password", None)
-    password_changed_at = cache.get("password_changed_at", datetime.now(timezone.utc).timestamp())
+    password_changed_at = cache.get("password_changed_at")
     if username != "admin" or password != get_config('ADMIN_PASSWORD', '1234'):
         return jsonify({"code": 401, "message": "用户名或密码错误"}), 401
     access_token = create_access_token(identity=username, additional_claims={'password_changed_at': password_changed_at})
@@ -86,7 +86,7 @@ def login():
 
 def check_pwd():
     claims = get_jwt()
-    password_changed_at = cache.get("password_changed_at", datetime.now(timezone.utc).timestamp())
+    password_changed_at = cache.get("password_changed_at")
     if 'password_changed_at' in claims:
         if claims['password_changed_at'] != password_changed_at:
             return False
@@ -380,4 +380,5 @@ app.debug = True
 if __name__ == '__main__':
     cache.set('proxy_count', 0)
     cache.set('proxy_traffic', 0)
+    cache.set("password_changed_at", datetime.now(timezone.utc).timestamp())
     app.run(host=HOST, port=PORT)

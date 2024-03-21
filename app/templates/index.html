@@ -24,6 +24,9 @@
       .speed-prefix {
         color: rgb(0, 119, 255);
       }
+      .speed-prefix-nohttp {
+        color: rgb(0, 119, 255);
+      }
       .ms-6 {
         margin-left: 4rem!important;
       }
@@ -129,42 +132,171 @@
               <h4 class="card-title" class="fw-bold">支持格式</h4>
               <p class="text-start">
                 分支源码：https://github.com/XTLS/Xray-core/archive/refs/heads/main.zip 
+                <span class="copy_btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
+                    <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
+                    <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                  </svg>
+                </span>
               </p>
               <p class="text-start">
                 Release源码：https://github.com/XTLS/Xray-core/archive/refs/tags/v1.8.7.zip
+                <span class="copy_btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
+                    <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
+                    <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                  </svg>
+                </span>
               </p>
               <p class="text-start">
                 Release文件：https://github.com/XTLS/Xray-core/releases/download/v1.8.7/Xray-windows-64.zip
+                <span class="copy_btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
+                    <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
+                    <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                  </svg>
+                </span>
               </p>
               <p class="text-start">
                 分支文件：https://github.com/XTLS/Xray-core/blob/main/README.md
+                <span class="copy_btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
+                    <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
+                    <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                  </svg>
+                </span>
               </p>
               <p class="text-start">
                 Raw文件：https://raw.githubusercontent.com/XTLS/Xray-core/main/LICENSE
+                <span class="copy_btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
+                    <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
+                    <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                  </svg>
+                </span>
               </p>
               <h4 class="card-title" class="fw-bold">各种玩法</h4>
               <p class="text-start">搭配浏览器插件：<a href="https://fhefh2015.github.io/Fast-GitHub/" class="text-decoration-none link-success"
                 target="_blank">Fast-GitHub</a></p>
               <p class="text-start">
                 短链接：<b>github</b>、<b>raw</b>、<b>gist</b> 等同于 https://github.com、https://raw.githubusercontent.com、https://gist.githubusercontent.com<br>
-                        <span class="speed-prefix ms-6"></span><b>github</b>/XTLS/Xray-core/releases/download/v1.8.7/Xray-windows-64.zip<br>
-                        <span class="speed-prefix ms-6"></span><b>raw</b>/XTLS/Xray-core/main/LICENSE<br>
-                        <span class="speed-prefix ms-6"></span><b>gist</b>/yisibl/7983901/raw/af7ec3f7fe65c298315179875cb1e5aff60d6035/git-resources.md
+                        <span><span class="speed-prefix ms-6"></span><b>github</b>/XTLS/Xray-core/releases/download/v1.8.7/Xray-windows-64.zip
+                         <span class="copy_btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
+                              <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
+                              <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
+                              <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                              <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                            </svg>
+                          </span>
+                          </span><br>
+                        <span>
+                        <span class="speed-prefix ms-6"></span><b>raw</b>/XTLS/Xray-core/main/LICENSE
+                          <span class="copy_btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
+                              <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
+                              <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
+                              <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                              <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                            </svg>
+                          </span>
+                        </span><br>
+                        <span><span class="speed-prefix ms-6"></span><b>gist</b>/yisibl/7983901/raw/af7ec3f7fe65c298315179875cb1e5aff60d6035/git-resources.md
+                          <span class="copy_btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
+                              <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
+                              <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
+                              <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                              <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                            </svg>
+                          </span>
+                        </span>
               </p>
               <p class="text-start">
-                git clone：git clone
+                git clone：<span>git clone
                 <span class="speed-prefix"></span
-                >https://github.com/XTLS/Xray-core.git
+                > https://github.com/XTLS/Xray-core.git
+                  <span class="copy_btn" data-type="1">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
+                      <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
+                      <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                      <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                    </svg>
+                  </span>
+                </span><br>
+                <span style="margin-left: 5.1rem;"></span><span>git clone https://user:<a href="https://github.com/settings/tokens" class="text-decoration-none link-primary" target="_blank">access_token</a>@<span class="speed-prefix-nohttp"></span
+                >/github/user/your_private_repo
+                  <span class="copy_btn" data-type="1">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
+                      <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
+                      <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                      <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                    </svg>
+                  </span>
+              </span>
               </p>
               <p class="text-start">
-                wget：wget
+                wget：<span>wget
                 <span class="speed-prefix"></span
-                >https://github.com/XTLS/Xray-core/archive/refs/heads/main.zip
+                > https://github.com/XTLS/Xray-core/archive/refs/heads/main.zip
+                <span class="copy_btn" data-type="1">
+                  <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
+                    <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
+                    <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                  </svg>
+                </span></span>
               </p>
               <p class="text-start">
-                curl：curl -O
+                curl：<span>curl -O
                 <span class="speed-prefix"></span
-                >https://github.com/XTLS/Xray-core/archive/refs/tags/v1.8.7.zip
+                > https://github.com/XTLS/Xray-core/archive/refs/tags/v1.8.7.zip
+                <span class="copy_btn" data-type="1">
+                  <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
+                    <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
+                    <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                  </svg>
+                </span>
+                </span>
               </p>
             </div>
           </form>
@@ -246,12 +378,21 @@
               <!-- Login form -->
               <form id="loginForm" class="needs-validation" novalidate>
                 <div class="input-group mb-3">
-                    <span class="input-group-text">用户名</span>
-                    <input type="text" class="form-control" id="username" required>
+                    <span class="input-group-text">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"></path>
+                        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"></path>
+                      </svg>
+                    </span>
+                    <input type="text" class="form-control" id="username" placeholder="用户名" required>
                 </div>
                 <div class="input-group mb-3">
-                    <span class="input-group-text">密码</span>
-                    <input type="password" class="form-control" id="password" required>
+                    <span class="input-group-text">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
+                        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"></path>
+                      </svg>
+                    </span>
+                    <input type="password" class="form-control" id="password" placeholder="密码" required>
                 </div>
                 <button id="loginButton" type="submit" class="btn btn-outline-primary">登录</button>
                 <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">取消</button>
@@ -260,13 +401,10 @@
           </div>
         </div>
       </div>
-      <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      <div class="toast-container position-fixed top-0 end-0 p-3">
         <div id="liveToast" class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
-          <div class="d-flex">
-            <div class="toast-body" id="msgId">
-              操作成功！
-            </div>
-            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          <div class="d-flex justify-content-center">
+            <div class="toast-body" id="msgId"></div>
           </div>
         </div>
       </div>
@@ -297,18 +435,18 @@
         themeBtn.style.display = 'block';
         if(theme == "dark"){
             isDark = true;
-            themeBtn.setAttribute("data-bs-title", '暗')
+            themeBtn.setAttribute("data-bs-title", '暗');
             document.getElementById('moon').style.display = 'block';
             document.getElementById('light').style.display = 'none';
             document.getElementById('auto').style.display = 'none';
         }else if(theme == "light"){
             isDark = false;
-            themeBtn.setAttribute("data-bs-title", '明')
+            themeBtn.setAttribute("data-bs-title", '明');
             document.getElementById('moon').style.display = 'none';
             document.getElementById('light').style.display = 'block';
             document.getElementById('auto').style.display = 'none';
         }else{
-            themeBtn.setAttribute("data-bs-title", '系统')
+            themeBtn.setAttribute("data-bs-title", '系统');
             document.getElementById('moon').style.display = 'none';
             document.getElementById('light').style.display = 'none';
             document.getElementById('auto').style.display = 'block';
@@ -333,6 +471,11 @@
       for (var i = 0; i < elements.length; i++) {
             var element = elements[i];
             element.innerHTML = getLocationUri();
+      }
+      elements = document.getElementsByClassName("speed-prefix-nohttp");
+      for (var i = 0; i < elements.length; i++) {
+            var element = elements[i];
+            element.innerHTML = location.host;
       }
       function toSubmit(e) {
         var forms = document.getElementsByClassName('needs-validation');
@@ -363,7 +506,7 @@
             pass_list:  document.getElementById('passTextarea').value,
             jsdelivr:  jsdelivrChecked?1:0
           };
-          postJSONData(api, jsonData, reloadPage,'保存成功');
+          postJSONData(api, jsonData, reloadPage,'😁 保存成功！');
 
       }
       function reloadPage(){
@@ -381,7 +524,7 @@
           if (response.ok) {
             return response.json();
           }else{
-            notify("登录失败，请重新登录");
+            notify("😣 登录失败，请重新登录！");
           }
           throw new Error('Network response was not ok.');
         })
@@ -421,6 +564,36 @@
         event.stopPropagation();
         
       }, false);
+      const els = document.querySelectorAll('.copy_btn');
+      els.forEach(function(el) {
+           el.addEventListener('click', function(event) {
+            var t = this.dataset.type;
+            var text = this.parentNode.textContent;
+            if(!t || t != 1){
+                const pattern = /(https?:\/\/[^\s]+)/g;
+                const links = this.parentNode.textContent.match(pattern);
+                text = links[0];
+            }
+            navigator.clipboard.writeText(text)
+              .then(() => {
+                document.querySelectorAll(".bi-clipboard-heart").forEach(function(e){
+                  e.style.display = 'inline-block';
+                });
+                document.querySelectorAll(".bi-check2").forEach(function(e){
+                  e.style.display = 'none';
+                });
+                this.querySelector(".bi-clipboard-heart").style.display = 'none';
+                this.querySelector(".bi-check2").style.display = 'inline-block';
+              })
+              .catch((error) => {
+                 notify("😣 内容复制失败！");
+            });
+            notify("😁 内容复制成功！");
+            event.preventDefault();
+            event.stopPropagation();
+          }, false);
+      });
+    
       function authLogin() {
           var user = document.getElementById('username').value;
           var pass = document.getElementById('password').value;
@@ -434,7 +607,7 @@
         }
         function notify(msg){
           const toastLiveExample = document.getElementById('liveToast');
-          const toast = new bootstrap.Toast(toastLiveExample);
+          const toast = new bootstrap.Toast(toastLiveExample,{"delay": 1000});
           document.getElementById('msgId').innerHTML = msg;
           toast.show();
         }
