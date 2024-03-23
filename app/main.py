@@ -106,7 +106,7 @@ def index():
         is_admin = check_pwd()
     except Exception as e:
         is_admin = False
-    return render_template('index.html', current_year=current_year, proxy_count=int(cache.get('proxy_count') or 0), format_traffic=format_traffic, is_admin=is_admin, rank = get_rank(), config=get_all_config())
+    return render_template('index.html', current_year=current_year, proxy_count=int(cache.get('proxy_count') or 0), format_traffic=format_traffic, is_admin=is_admin, rank = get_rank(), config=get_all_config(), size_limit=bytes_to_readable(size_limit))
 
 @app.route('/admin/api/config/save', methods=['POST'])
 @jwt_required(locations=["cookies"])
