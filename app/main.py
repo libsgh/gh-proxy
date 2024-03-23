@@ -380,5 +380,6 @@ app.debug = True
 if __name__ == '__main__':
     cache.set('proxy_count', 0)
     cache.set('proxy_traffic', 0)
-    cache.set("password_changed_at", datetime.now(timezone.utc).timestamp())
+    if cache.get('password_changed_at'):
+        cache.set("password_changed_at", datetime.now(timezone.utc).timestamp())
     app.run(host=HOST, port=PORT)
