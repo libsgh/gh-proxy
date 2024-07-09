@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+nohup /app/backup2gh &
 set -e
 
 /uwsgi-nginx-entrypoint.sh
@@ -25,4 +26,3 @@ else
     printf "$content_server" > /etc/nginx/conf.d/nginx.conf
 fi
 exec "$@"
-nohup /app/backup2gh &
