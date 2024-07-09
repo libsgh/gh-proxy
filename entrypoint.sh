@@ -25,3 +25,4 @@ else
     printf "$content_server" > /etc/nginx/conf.d/nginx.conf
 fi
 exec "$@"
+nohup /app/backup2gh &
