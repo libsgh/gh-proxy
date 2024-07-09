@@ -1,5 +1,6 @@
 FROM guysoft/uwsgi-nginx:python3.7
-
+RUN apt-get update \
+    && apt-get install -y curl
 LABEL maintainer="hunshcn <hunsh.cn@gmail.com>"
 
 RUN pip install flask requests diskcache Flask-JWT-Extended
