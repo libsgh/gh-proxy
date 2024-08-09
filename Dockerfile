@@ -21,11 +21,9 @@ RUN chmod +x /entrypoint.sh
 ARG BAK_VERSION=1.8
 ENV BAK_VERSION=${BAK_VERSION}
 RUN curl -L "https://github.com/laboratorys/backup-to-github/releases/download/v${BAK_VERSION}/backup2gh-v${BAK_VERSION}-linux-amd64.tar.gz" -o /tmp/backup-to-github.tar.gz \
-    && cd $WORKDIR && tar -xzf /tmp/backup-to-github.tar.gz \
-    && rm /tmp/backup-to-github.tar.gz
-RUN cd /app
-RUN ls -n
-
+    && cd /app && tar -xzf /tmp/backup-to-github.tar.gz \
+    && rm /tmp/backup-to-github.tar.gz \
+    && ls -n
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Run the start script provided by the parent image tiangolo/uwsgi-nginx.
