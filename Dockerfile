@@ -18,7 +18,7 @@ RUN mv /entrypoint.sh /uwsgi-nginx-entrypoint.sh
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-ARG BAK_VERSION=1.8
+ARG BAK_VERSION=2.0
 ENV BAK_VERSION=${BAK_VERSION}
 RUN curl -L "https://github.com/laboratorys/backup-to-github/releases/download/v${BAK_VERSION}/backup2gh-v${BAK_VERSION}-linux-amd64.tar.gz" -o /tmp/backup-to-github.tar.gz \
     && cd /app && tar -xzf /tmp/backup-to-github.tar.gz \
