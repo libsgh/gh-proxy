@@ -286,6 +286,7 @@ def check_domain():
         r_headers = dict(request.headers)
         r = requests.request(method=request.method, url=DOCKER_REGISTRY + request.path, data=request.data, headers=r_headers, stream=True, allow_redirects=False)
         return r
+    return None
 
 def process_scope(url):
     parsed_url = urlparse(url)
