@@ -247,22 +247,21 @@ def gist_handler(u):
     return handler(u)
 
 @app.before_request
-def check_domain():
+def docker_proxy():
     p = request.path
     if p == '/favicon.ico':
-        return send_from_directory(app.static_folder,
-                               'docker.png', mimetype='image/vnd.microsoft.icon')
+        return send_from_directory(app.static_folder, 'docker.png', mimetype='image/vnd.microsoft.icon')
+    
     if request.host.startswith("hub"):
         if p == '/v2/':
             upstream_response = requests.get(DOCKER_REGISTRY + p)
             response_body = upstream_response.text
-            # Set the WWW-Authenticate header
             headers = {
-                'WWW-Authenticate': f'Bearer realm="https://{request.host}/auth/token",service="docker-proxy-worker"'
+                'WWW-Authenticate': f'Bearer realm="https://{request.host}/auth/token", service="docker-proxy-worker"'
             }
-            # Create the Flask response object
             response = Response(response_body, status=upstream_response.status_code, headers=headers)
             return response
+        
         elif p == '/auth/token':
             scope = process_scope(request.url)
             url = 'https://auth.docker.io/token'
@@ -270,11 +269,12 @@ def check_domain():
                 'service': 'registry.docker.io',
                 'scope': scope
             }
-            print(url + '?' + urlencode(params))
             response = requests.get(url + '?' + urlencode(params))
             return jsonify(response.json())
+        
         elif p == '' or p == '/':
-             return "Hello?"
+            return "Hello?"
+        
         parts = p.split('/')
         if len(parts) == 5:
             parts.insert(2, 'library')
@@ -283,8 +283,8 @@ def check_domain():
             new_path = '/'.join(parts)
             new_url = new_url._replace(path=new_path)
             return redirect(new_url.geturl(), code=301)
-        return docker_proxy_handler(DOCKER_REGISTRY)
-    return None
+    
+    return docker_proxy_handler(DOCKER_REGISTRY)
 
 def process_scope(url):
     parsed_url = urlparse(url)
