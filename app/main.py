@@ -273,8 +273,8 @@ def docker_proxy():
             return jsonify(response.json())
         
         elif p == '' or p == '/':
-            return "Hello?"
-        
+             current_year = datetime.now().year
+             return render_template('docker.html', current_year=current_year, host=request.host)
         parts = p.split('/')
         if len(parts) == 5:
             parts.insert(2, 'library')
@@ -284,7 +284,7 @@ def docker_proxy():
             new_url = new_url._replace(path=new_path)
             return redirect(new_url.geturl(), code=301)
     
-    return docker_proxy_handler(DOCKER_REGISTRY+request.path)
+    return docker_proxy_handler(DOCKER_REGISTRY+p)
 
 def process_scope(url):
     parsed_url = urlparse(url)
