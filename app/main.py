@@ -245,6 +245,45 @@ def gist_handler(u):
     u =  'https://gist.githubusercontent.com/' + u
     return handler(u)
 
+@app.before_request
+def check_domain():
+    if request.path == '/favicon.ico':
+        return send_from_directory(app.static_folder,
+                               'docker.png', mimetype='image/vnd.microsoft.icon')
+    if request.host.startswith("hub"):
+        return docker_proxy_handler("https://registry-1.docker.io"+request.path)
+
+def docker_proxy_handler(u, allow_redirects=False):
+    headers = {}
+    r_headers = dict(request.headers)
+    if 'Host' in r_headers:
+        r_headers.pop('Host')
+    try:
+        url = u + request.url.replace(request.base_url, '', 1)
+        if url.startswith('https:/') and not url.startswith('https://'):
+            url = 'https://' + url[7:]
+        print(url)
+        r = requests.request(method=request.method, url=url, data=request.data, headers=r_headers, stream=True, allow_redirects=allow_redirects)
+        headers = dict(r.headers)
+        def generate():
+            total_size = 0
+            for chunk in iter_content(r, chunk_size=CHUNK_SIZE):
+                total_size += len(chunk)
+                yield chunk
+        if 'Location' in r.headers:
+            _location = r.headers.get('Location')
+            if check_url(_location):
+                headers['Location'] = '/' + _location
+            else:
+                return proxy(_location, True)
+        b = generate()
+        return Response(b, headers=headers, status=r.status_code)
+    except Exception as e:
+        headers['content-type'] = 'text/html; charset=UTF-8'
+        return Response('server error ' + str(e), status=500, headers=headers)
+    
+    
+
 
 @app.route('/<path:u>', methods=['GET', 'POST'])
 def handler(u):
