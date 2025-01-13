@@ -270,6 +270,7 @@ def check_domain():
                 'service': 'registry.docker.io',
                 'scope': scope
             }
+            print(url + '?' + urlencode(params))
             response = requests.get(url + '?' + urlencode(params))
             return response
         elif p == '' or p == '/':
