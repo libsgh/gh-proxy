@@ -272,7 +272,7 @@ def check_domain():
             }
             print(url + '?' + urlencode(params))
             response = requests.get(url + '?' + urlencode(params))
-            return response
+            return jsonify(response.json())
         elif p == '' or p == '/':
              return "Hello?"
         parts = p.split('/')
