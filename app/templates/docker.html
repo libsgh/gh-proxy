@@ -93,7 +93,7 @@ docker tag  {{host}}/bitnami/postgresql bitnami/postgresql</code></pre>
         <pre><code># 添加镜像代理到 Docker 镜像源
 sudo tee /etc/docker/daemon.json &lt;&lt; EOF
 {
-  "registry-mirrors": ["https:// {{host}}"]
+  "registry-mirrors": ["https://{{host}}"]
 }
 EOF</code></pre>
       </div>

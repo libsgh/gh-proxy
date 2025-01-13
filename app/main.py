@@ -283,8 +283,8 @@ def docker_proxy():
             new_path = '/'.join(parts)
             new_url = new_url._replace(path=new_path)
             return redirect(new_url.geturl(), code=301)
-    
-    return docker_proxy_handler(DOCKER_REGISTRY+p)
+        return docker_proxy_handler(DOCKER_REGISTRY+p)
+    return None
 
 def process_scope(url):
     parsed_url = urlparse(url)
@@ -300,6 +300,7 @@ def process_scope(url):
 def docker_proxy_handler(u, allow_redirects=False):
     headers = {}
     r_headers = dict(request.headers)
+    print(r_headers)
     if 'Host' in r_headers:
         r_headers.pop('Host')
     try:
