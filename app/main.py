@@ -283,9 +283,7 @@ def check_domain():
             new_path = '/'.join(parts)
             new_url = new_url._replace(path=new_path)
             return redirect(new_url.geturl(), code=301)
-        r_headers = dict(request.headers)
-        r = requests.request(method=request.method, url=DOCKER_REGISTRY + request.path, data=request.data, headers=r_headers, stream=True, allow_redirects=False)
-        return r
+        return docker_proxy_handler(DOCKER_REGISTRY)
     return None
 
 def process_scope(url):
@@ -298,7 +296,6 @@ def process_scope(url):
             parts[1] = 'library/' + parts[1]
             scope[0] = ':'.join(parts)
             return scope[0]
-    
     return None
 def docker_proxy_handler(u, allow_redirects=False):
     headers = {}
