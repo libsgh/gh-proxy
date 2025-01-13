@@ -12,7 +12,7 @@ from urllib3.exceptions import (
     DecodeError, ReadTimeoutError, ProtocolError)
 from datetime import datetime, timezone
 from diskcache import Cache
-from urllib.parse import quote
+from urllib.parse import quote, urlparse, parse_qs, urlencode
 import os
 from flask_jwt_extended import (JWTManager, jwt_required, create_access_token, verify_jwt_in_request, set_access_cookies, get_jwt)
 from datetime import timedelta
@@ -72,6 +72,7 @@ exp7 = re.compile(r'^(?:https?://)?api\.github\.com/.*$')
 
 requests.sessions.default_headers = lambda: CaseInsensitiveDict()
 
+DOCKER_REGISTRY = 'https://registry-1.docker.io'
 @app.route("/admin/api/login", methods=["POST"])
 def login():
     username = request.json.get("username", None)
@@ -247,12 +248,56 @@ def gist_handler(u):
 
 @app.before_request
 def check_domain():
-    if request.path == '/favicon.ico':
+    p = request.path
+    if p == '/favicon.ico':
         return send_from_directory(app.static_folder,
                                'docker.png', mimetype='image/vnd.microsoft.icon')
     if request.host.startswith("hub"):
-        return docker_proxy_handler("https://registry-1.docker.io"+request.path)
+        if p == '/v2/':
+            upstream_response = requests.get(DOCKER_REGISTRY + p)
+            response_body = upstream_response.text
+            # Set the WWW-Authenticate header
+            headers = {
+                'WWW-Authenticate': f'Bearer realm="https://{request.host}/auth/token",service="docker-proxy-worker"'
+            }
+            # Create the Flask response object
+            response = Response(response_body, status=upstream_response.status_code, headers=headers)
+            return response
+        elif p == '/auth/token':
+            scope = process_scope(request.url)
+            url = 'https://auth.docker.io/token'
+            params = {
+                'service': 'registry.docker.io',
+                'scope': scope
+            }
+            response = requests.get(url + '?' + urlencode(params))
+            return response
+        elif p == '' or p == '/':
+             return "Hello?"
+        parts = p.split('/')
+        if len(parts) == 5:
+            parts.insert(2, 'library')
+            PROXY_REGISTRY = request.host
+            new_url = urlparse(PROXY_REGISTRY)
+            new_path = '/'.join(parts)
+            new_url = new_url._replace(path=new_path)
+            return redirect(new_url.geturl(), code=301)
+        r_headers = dict(request.headers)
+        r = requests.request(method=request.method, url=DOCKER_REGISTRY + request.path, data=request.data, headers=r_headers, stream=True, allow_redirects=False)
+        return r
 
+def process_scope(url):
+    parsed_url = urlparse(url)
+    query_params = parse_qs(parsed_url.query)
+    scope = query_params.get('scope')
+    if scope:
+        parts = scope[0].split(':')
+        if len(parts) == 3 and '/' not in parts[1]:
+            parts[1] = 'library/' + parts[1]
+            scope[0] = ':'.join(parts)
+            return scope[0]
+    
+    return None
 def docker_proxy_handler(u, allow_redirects=False):
     headers = {}
     r_headers = dict(request.headers)
