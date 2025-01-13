@@ -284,7 +284,7 @@ def docker_proxy():
             new_url = new_url._replace(path=new_path)
             return redirect(new_url.geturl(), code=301)
     
-    return docker_proxy_handler(DOCKER_REGISTRY)
+    return docker_proxy_handler(DOCKER_REGISTRY+request.path)
 
 def process_scope(url):
     parsed_url = urlparse(url)
