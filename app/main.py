@@ -269,26 +269,21 @@ def docker_proxy():
              current_year = datetime.now().year
              return render_template('docker.html', current_year=current_year, host=request.host)
         elif p == '/v2/':
-            upstream_response = requests.get(upstream + "/v2/", allow_redirects=True, headers=r_headers)
-            print(upstream_response.status_code)
-            if upstream_response.status_code == 200:
-                return Response(
-                    response=upstream_response.content,
-                    status=upstream_response.status_code,
-                    headers=dict(upstream_response.headers)
-                )
-            authenticate_header = upstream_response.headers.get("WWW-Authenticate")
-            authenticate = parse_authenticate(authenticate_header)
-            scope = process_scope(request.url, isDockerHub)
-            print(scope)
-            print(authenticate)
-            url = authenticate['realm']
+            upstream_response = requests.get(upstream + p)
+            response_body = upstream_response.text
+            headers = {
+                'WWW-Authenticate': f'Bearer realm="https://{request.host}/auth/token", service="docker-proxy-worker"'
+            }
+            return Response(response_body, status=upstream_response.status_code, headers=headers)
+        elif p == '/auth/token':
+            scope = process_scope(request.url)
+            url = 'https://auth.docker.io/token'
             params = {
-                'service': authenticate['service'],
+                'service': 'registry.docker.io',
                 'scope': scope
             }
-            print(params)
-            return docker_proxy_handler(url + '?' + urlencode(params))
+            response = requests.get(url + '?' + urlencode(params))
+            return Response(response.text, status=response.status_code)
         # redirect for DockerHub library images
         # Example: /v2/hello-world/manifests/latest => /v2/library/hello-world/manifests/latest
         parts = p.split('/')
