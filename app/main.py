@@ -262,15 +262,19 @@ def docker_proxy():
     upstream = getRegistry(request.host)
     isDockerHub = upstream == DOCKER_REGISTRY
     if upstream:
+        r_headers = dict(request.headers)
         if p == '/favicon.ico' or p == '/static/docker.png':
             return send_from_directory(app.static_folder, 'docker.png', mimetype='image/vnd.microsoft.icon')
         elif p == '' or p == '/':
              current_year = datetime.now().year
              return render_template('docker.html', current_year=current_year, host=request.host)
         elif p == '/v2/':
-            upstream_response = requests.get(upstream + p, allow_redirects=True)
+            upstream_response = requests.get(upstream + p, allow_redirects=True, headers=r_headers)
+            return upstream_response
+        elif p == '/v2/auth':
+            upstream_response = requests.get(upstream + "/v2/", allow_redirects=True, headers=r_headers)
             if upstream_response.status_code != 401:
-                 return upstream_response
+                return upstream_response
             authenticate_header = upstream_response.headers.get("WWW-Authenticate")
             authenticate = parse_authenticate(authenticate_header)
             print(authenticate)
@@ -281,9 +285,11 @@ def docker_proxy():
                 'scope': scope
             }
             print(params)
-            print(response)
             response = requests.get(url + '?' + urlencode(params))
-            return jsonify(response.json())
+            d = response.json()
+            print(d)
+        
+            return jsonify(d)
         # redirect for DockerHub library images
         # Example: /v2/hello-world/manifests/latest => /v2/library/hello-world/manifests/latest
         parts = p.split('/')
