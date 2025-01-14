@@ -275,6 +275,7 @@ def docker_proxy():
             }
             return Response(response_body, status=upstream_response.status_code, headers=headers)
         elif p == '/auth/token':
+            print(request.url)
             scope = process_scope(request.url, isDockerHub)
             url = 'https://auth.docker.io/token'
             params = {
@@ -283,7 +284,8 @@ def docker_proxy():
             }
             response = requests.get(url + '?' + urlencode(params))
             print(scope, url, params, response.status_code)
-            return Response(response.text, status=response.status_code)
+            return jsonify(response.json())
+            # return Response(response.text, status=response.status_code)
         # redirect for DockerHub library images
         # Example: /v2/hello-world/manifests/latest => /v2/library/hello-world/manifests/latest
         parts = p.split('/')
@@ -325,7 +327,7 @@ def process_scope(url, isDockerHub):
             scope[0] = ':'.join(parts)
             return scope[0]
     return scope[0]
-def docker_proxy_handler(u, allow_redirects=False):
+def docker_proxy_handler(u, allow_redirects=True):
     headers = {}
     r_headers = dict(request.headers)
     print(r_headers)
