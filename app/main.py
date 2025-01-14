@@ -271,7 +271,7 @@ def docker_proxy():
         elif p == '/v2/':
             upstream_response = requests.get(upstream + "/v2/", allow_redirects=True, headers=r_headers)
             print(upstream_response.status_code)
-            if upstream_response.status_code != 401:
+            if upstream_response.status_code == 200:
                 return Response(
                     response=upstream_response.content,
                     status=upstream_response.status_code,
