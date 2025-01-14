@@ -280,6 +280,8 @@ def docker_proxy():
                 'service': authenticate['service'],
                 'scope': scope
             }
+            print(params)
+            print(response)
             response = requests.get(url + '?' + urlencode(params))
             return jsonify(response.json())
         # redirect for DockerHub library images
