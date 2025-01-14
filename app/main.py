@@ -322,18 +322,16 @@ def process_scope(url, isDockerHub):
             parts[1] = 'library/' + parts[1]
             scope[0] = ':'.join(parts)
             return scope[0]
-    return scope[0]
+    return scope
 def docker_proxy_handler(u, allow_redirects=False):
     headers = {}
     r_headers = dict(request.headers)
-    print(r_headers)
     if 'Host' in r_headers:
         r_headers.pop('Host')
     try:
         url = u + request.url.replace(request.base_url, '', 1)
         if url.startswith('https:/') and not url.startswith('https://'):
             url = 'https://' + url[7:]
-        print(url)
         r = requests.request(method=request.method, url=url, data=request.data, headers=r_headers, stream=True, allow_redirects=allow_redirects)
         headers = dict(r.headers)
         def generate():
