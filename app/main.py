@@ -282,7 +282,7 @@ def docker_proxy():
                 'service': 'registry.docker.io',
                 'scope': scope
             }
-            response = requests.get(url + '?' + urlencode(request.args))
+            response = requests.get(url + '?' + urlencode(params))
             c = response.text
             print(scope, url, urlencode(request.args), response.status_code, c)
             return Response(c, status=response.status_code, headers=dict(response.headers))
@@ -331,14 +331,11 @@ def process_scope(url, isDockerHub):
 def docker_proxy_handler(u, allow_redirects=True):
     headers = {}
     r_headers = dict(request.headers)
-    print(r_headers)
-    if 'Host' in r_headers:
-        r_headers.pop('Host')
+    print("docker_proxy", u, r_headers, request.method)
     try:
         url = u + request.url.replace(request.base_url, '', 1)
         if url.startswith('https:/') and not url.startswith('https://'):
             url = 'https://' + url[7:]
-        print(url)
         r = requests.request(method=request.method, url=url, data=request.data, headers=r_headers, stream=True, allow_redirects=allow_redirects)
         headers = dict(r.headers)
         def generate():
