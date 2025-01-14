@@ -276,19 +276,14 @@ def docker_proxy():
                 return upstream_response
             authenticate_header = upstream_response.headers.get("WWW-Authenticate")
             authenticate = parse_authenticate(authenticate_header)
-            print(authenticate)
             scope = process_scope(request.url, isDockerHub)
+            print(scope)
             url = authenticate['realm']
             params = {
                 'service': authenticate['service'],
                 'scope': scope
             }
-            print(params)
-            response = requests.get(url + '?' + urlencode(params))
-            d = response.json()
-            print(d)
-        
-            return jsonify(d)
+            return docker_proxy_handler(url + '?' + urlencode(params))
         # redirect for DockerHub library images
         # Example: /v2/hello-world/manifests/latest => /v2/library/hello-world/manifests/latest
         parts = p.split('/')
