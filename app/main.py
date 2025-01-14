@@ -269,8 +269,6 @@ def docker_proxy():
              current_year = datetime.now().year
              return render_template('docker.html', current_year=current_year, host=request.host)
         elif p == '/v2/':
-            return docker_proxy_handler(upstream+p)
-        elif p == '/v2/auth':
             upstream_response = requests.get(upstream + "/v2/", allow_redirects=True, headers=r_headers)
             if upstream_response.status_code != 401:
                 return upstream_response
