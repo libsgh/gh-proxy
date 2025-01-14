@@ -278,10 +278,11 @@ def docker_proxy():
             scope = process_scope(request.url, isDockerHub)
             url = 'https://auth.docker.io/token'
             params = {
-                'service': 'registry.docker.io',
+                'service': 'docker-proxy-worker',
                 'scope': scope
             }
             response = requests.get(url + '?' + urlencode(params))
+            print(scope, url, params, response.status_code)
             return Response(response.text, status=response.status_code)
         # redirect for DockerHub library images
         # Example: /v2/hello-world/manifests/latest => /v2/library/hello-world/manifests/latest
