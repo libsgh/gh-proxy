@@ -262,7 +262,6 @@ def docker_proxy():
     upstream = getRegistry(request.host)
     isDockerHub = upstream == DOCKER_REGISTRY
     if upstream:
-        r_headers = dict(request.headers)
         if p == '/favicon.ico' or p == '/static/docker.png':
             return send_from_directory(app.static_folder, 'docker.png', mimetype='image/vnd.microsoft.icon')
         elif p == '' or p == '/':
@@ -276,7 +275,7 @@ def docker_proxy():
             }
             return Response(response_body, status=upstream_response.status_code, headers=headers)
         elif p == '/auth/token':
-            scope = process_scope(request.url)
+            scope = process_scope(request.url, isDockerHub)
             url = 'https://auth.docker.io/token'
             params = {
                 'service': 'registry.docker.io',
