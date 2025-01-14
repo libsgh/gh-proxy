@@ -271,7 +271,7 @@ def docker_proxy():
             upstream_response = requests.get(upstream + p)
             response_body = upstream_response.text
             headers = {
-                'WWW-Authenticate': f'Bearer realm="https://{request.host}/auth/token", service="docker-proxy-worker"'
+                'WWW-Authenticate': f'Bearer realm="https://{request.host}/auth/token", service="registry.docker.io"'
             }
             return Response(response_body, status=upstream_response.status_code, headers=headers)
         elif p == '/auth/token':
@@ -279,11 +279,11 @@ def docker_proxy():
             scope = process_scope(request.url, isDockerHub)
             url = 'https://auth.docker.io/token'
             params = {
-                'service': 'docker-proxy-worker',
+                'service': 'registry.docker.io',
                 'scope': scope
             }
-            response = requests.get(url + '?' + urlencode(params))
-            print(scope, url, params, response.status_code)
+            response = requests.get(url + '?' + urlencode(request.args))
+            print(scope, url, urlencode(request.args), response.status_code)
             return jsonify(response.json())
             # return Response(response.text, status=response.status_code)
         # redirect for DockerHub library images
