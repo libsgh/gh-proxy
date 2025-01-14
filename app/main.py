@@ -270,8 +270,8 @@ def docker_proxy():
         elif p == '/v2/':
             upstream_response = requests.get(upstream + p, allow_redirects=True)
             if upstream_response.status_code != 401:
-                 return response
-            authenticate_header = response.headers.get("WWW-Authenticate")
+                 return upstream_response
+            authenticate_header = upstream_response.headers.get("WWW-Authenticate")
             authenticate = parse_authenticate(authenticate_header)
             print(authenticate)
             scope = process_scope(request.url, isDockerHub)
