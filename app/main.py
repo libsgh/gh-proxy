@@ -283,8 +283,9 @@ def docker_proxy():
                 'scope': scope
             }
             response = requests.get(url + '?' + urlencode(request.args))
-            print(scope, url, urlencode(request.args), response.status_code)
-            return jsonify(response.json())
+            c = response.text
+            print(scope, url, urlencode(request.args), response.status_code, c)
+            return Response(c, status=response.status_code, headers=dict(response.headers))
             # return Response(response.text, status=response.status_code)
         # redirect for DockerHub library images
         # Example: /v2/hello-world/manifests/latest => /v2/library/hello-world/manifests/latest
