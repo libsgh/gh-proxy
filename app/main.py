@@ -72,7 +72,17 @@ exp7 = re.compile(r'^(?:https?://)?api\.github\.com/.*$')
 
 requests.sessions.default_headers = lambda: CaseInsensitiveDict()
 
-DOCKER_REGISTRY = 'https://registry-1.docker.io'
+DOCKER_REGISTRY = "https://registry-1.docker.io"
+DOCKER_ROUTES = {
+  "hub": DOCKER_REGISTRY,
+  "quay": "https://quay.io",
+  "gcr": "https://gcr.io",
+  "k8s-gcr": "https://k8s.gcr.io",
+  "k8s": "https://registry.k8s.io",
+  "ghcr": "https://ghcr.io",
+  "cloudsmith": "https://docker.cloudsmith.io",
+  "ecr": "https://public.ecr.aws"
+}
 @app.route("/admin/api/login", methods=["POST"])
 def login():
     username = request.json.get("username", None)
@@ -249,54 +259,70 @@ def gist_handler(u):
 @app.before_request
 def docker_proxy():
     p = request.path
-    if p == '/favicon.ico':
-        return send_from_directory(app.static_folder, 'docker.png', mimetype='image/vnd.microsoft.icon')
-    
-    if request.host.startswith("hub"):
-        if p == '/v2/':
-            upstream_response = requests.get(DOCKER_REGISTRY + p)
-            response_body = upstream_response.text
-            headers = {
-                'WWW-Authenticate': f'Bearer realm="https://{request.host}/auth/token", service="docker-proxy-worker"'
-            }
-            response = Response(response_body, status=upstream_response.status_code, headers=headers)
-            return response
-        
-        elif p == '/auth/token':
-            scope = process_scope(request.url)
-            url = 'https://auth.docker.io/token'
+    upstream = getRegistry(request.host)
+    isDockerHub = upstream == DOCKER_REGISTRY
+    if upstream:
+        if p == '/favicon.ico' or p == '/static/docker.png':
+            return send_from_directory(app.static_folder, 'docker.png', mimetype='image/vnd.microsoft.icon')
+        elif p == '' or p == '/':
+             current_year = datetime.now().year
+             return render_template('docker.html', current_year=current_year, host=request.host)
+        elif p == '/v2/':
+            upstream_response = requests.get(upstream + p, allow_redirects=True)
+            if upstream_response.status_code != 401:
+                 return response
+            authenticate_header = response.headers.get("WWW-Authenticate")
+            authenticate = parse_authenticate(authenticate_header)
+            print(authenticate)
+            scope = process_scope(request.url, isDockerHub)
+            url = authenticate['realm']
             params = {
-                'service': 'registry.docker.io',
+                'service': authenticate['service'],
                 'scope': scope
             }
             response = requests.get(url + '?' + urlencode(params))
             return jsonify(response.json())
-        
-        elif p == '' or p == '/':
-             current_year = datetime.now().year
-             return render_template('docker.html', current_year=current_year, host=request.host)
+        # redirect for DockerHub library images
+        # Example: /v2/hello-world/manifests/latest => /v2/library/hello-world/manifests/latest
         parts = p.split('/')
-        if len(parts) == 5:
+        if isDockerHub and len(parts) == 5:
             parts.insert(2, 'library')
             PROXY_REGISTRY = request.host
             new_url = urlparse(PROXY_REGISTRY)
             new_path = '/'.join(parts)
             new_url = new_url._replace(path=new_path)
             return redirect(new_url.geturl(), code=301)
-        return docker_proxy_handler(DOCKER_REGISTRY+p)
+        return docker_proxy_handler(upstream+p)
     return None
-
-def process_scope(url):
+def parse_authenticate(authenticate_str):
+    pattern = r'=(?:"(.*?)"|\'(.*?)\')'
+    matches = re.findall(pattern, authenticate_str)
+    if not matches or len(matches) < 2:
+        raise ValueError(f'Invalid Www-Authenticate Header: {authenticate_str}')
+    
+    return {
+        'realm': matches[0][0] if matches[0][0] else matches[0][1],
+        'service': matches[1][0] if matches[1][0] else matches[1][1]
+    }
+def getRegistry(host):
+    host_name = host.split('.')[0]
+    matched_registry = None
+    for key, value in DOCKER_ROUTES.items():
+        if key == host_name:
+            matched_registry = value
+            break
+    return matched_registry
+def process_scope(url, isDockerHub):
     parsed_url = urlparse(url)
     query_params = parse_qs(parsed_url.query)
     scope = query_params.get('scope')
-    if scope:
+    if scope and isDockerHub:
         parts = scope[0].split(':')
         if len(parts) == 3 and '/' not in parts[1]:
             parts[1] = 'library/' + parts[1]
             scope[0] = ':'.join(parts)
             return scope[0]
-    return None
+    return scope[0]
 def docker_proxy_handler(u, allow_redirects=False):
     headers = {}
     r_headers = dict(request.headers)
