@@ -324,7 +324,7 @@ def process_scope(url, isDockerHub):
             parts[1] = 'library/' + parts[1]
             scope[0] = ':'.join(parts)
             return scope[0]
-    return scope
+    return scope[0]
 def docker_proxy_handler(u, allow_redirects=False):
     headers = {}
     r_headers = dict(request.headers)
