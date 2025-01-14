@@ -270,17 +270,20 @@ def docker_proxy():
              return render_template('docker.html', current_year=current_year, host=request.host)
         elif p == '/v2/':
             upstream_response = requests.get(upstream + "/v2/", allow_redirects=True, headers=r_headers)
+            print(upstream_response.status_code)
             if upstream_response.status_code != 401:
                 return upstream_response
             authenticate_header = upstream_response.headers.get("WWW-Authenticate")
             authenticate = parse_authenticate(authenticate_header)
             scope = process_scope(request.url, isDockerHub)
             print(scope)
+            print(authenticate)
             url = authenticate['realm']
             params = {
                 'service': authenticate['service'],
                 'scope': scope
             }
+            print(params)
             return docker_proxy_handler(url + '?' + urlencode(params))
         # redirect for DockerHub library images
         # Example: /v2/hello-world/manifests/latest => /v2/library/hello-world/manifests/latest
