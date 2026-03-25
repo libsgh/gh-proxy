@@ -1,10 +1,11 @@
-FROM guysoft/uwsgi-nginx:python3.7
+FROM tiangolo/uwsgi-nginx:python3.12
 RUN apt-get update \
     && apt-get install -y curl \
     && apt-get install -y ca-certificates
 LABEL maintainer="hunshcn <hunsh.cn@gmail.com>"
 
-RUN pip install flask requests diskcache Flask-JWT-Extended
+COPY requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
 COPY ./app /app
 WORKDIR /app
@@ -18,11 +19,11 @@ RUN mv /entrypoint.sh /uwsgi-nginx-entrypoint.sh
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-ARG BAK_VERSION=2.0
+ARG BAK_VERSION=2.3
 ENV BAK_VERSION=${BAK_VERSION}
-RUN curl -L "https://github.com/laboratorys/backup-to-github/releases/download/v${BAK_VERSION}/backup2gh-v${BAK_VERSION}-linux-amd64.tar.gz" -o /tmp/backup-to-github.tar.gz \
-    && cd /app && tar -xzf /tmp/backup-to-github.tar.gz \
-    && rm /tmp/backup-to-github.tar.gz
+RUN curl -L "https://github.com/laboratorys/backup2gh/releases/download/v${BAK_VERSION}/backup2gh-linux-amd64.tar.gz" -o /tmp/backup2gh.tar.gz \
+    && cd /app && tar -xzf /tmp/backup2gh.tar.gz \
+    && rm /tmp/backup2gh.tar.gz
 
 ENTRYPOINT ["/entrypoint.sh"]
 
