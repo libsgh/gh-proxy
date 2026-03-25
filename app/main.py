@@ -30,7 +30,7 @@ KB = 1024
 MB = KB ** 2  # 1024 * 1024
 GB = KB ** 3  # 1024 * 1024 * 1024
 TB = KB ** 4  # 1024 * 1024 * 1024 * 1024
-size_limit = int(get_config('SIZE_LIMIT', GB * 999))  # 允许的文件大小，默认999GB，相当于无限制了 https://github.com/hunshcn/gh-proxy/issues/8
+size_limit = int(get_config('SIZE_LIMIT', GB * 1))  # 允许的文件大小，默认1GB https://github.com/hunshcn/gh-proxy/issues/8
 
 """
   先生效白名单再匹配黑名单，pass_list匹配到的会直接302到jsdelivr而忽略设置
@@ -68,7 +68,7 @@ exp4 = re.compile(r'^(?:https?://)?raw\.(?:githubusercontent|github)\.com/(?P<au
 exp5 = re.compile(r'^(?:https?://)?gist\.(?:githubusercontent|github)\.com/(?P<author>.+?)/.+?/.+$')
 exp6 = re.compile(r'^(?:https?://)?git\.io/.*$')
 exp7 = re.compile(r'^(?:https?://)?api\.github\.com/.*$')
-
+exp8 = re.compile(r'^(?:https?://)?nightly\.link/.+?/.+?/(?:workflows|actions/runs)/.+$', re.IGNORECASE)
 
 requests.sessions.default_headers = lambda: CaseInsensitiveDict()
 
@@ -225,7 +225,7 @@ def iter_content(self, chunk_size=1, decode_unicode=False):
 
 
 def check_url(u):
-    for exp in (exp1, exp2, exp3, exp4, exp5, exp6, exp7):
+    for exp in (exp1, exp2, exp3, exp4, exp5, exp6, exp7, exp8):
         m = exp.match(u)
         if m:
             return m
@@ -244,6 +244,11 @@ def raw_handler(u):
 @app.route('/gist/<path:u>', methods=['GET', 'POST'])
 def gist_handler(u):
     u =  'https://gist.githubusercontent.com/' + u
+    return handler(u)
+
+@app.route('/nightly/<path:u>', methods=['GET', 'POST'])
+def nightly_handler(u):
+    u =  'https://nightly.link/' + u
     return handler(u)
 
 @app.before_request
@@ -337,6 +342,7 @@ def handler(u):
         u = u.replace('s:/', 's://', 1)  # uwsgi会将//传递为/
     pass_by = False
     m = check_url(u)
+    print(f"Request URL: {u}, Matched: {bool(m)}")
     if m:
         m = tuple(m.groups())
         if white_list:

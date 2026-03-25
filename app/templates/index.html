@@ -56,7 +56,7 @@
   </head>
   <body>
     <div class="container text-center">
-      <div class="row d-flex align-items-center" style="height: 95vh">
+      <div class="row d-flex align-items-center" style="height: 96vh">
         <div class="col-md-10 offset-md-1 align-self-center">
         <h2 class="mb-4"><img id="logo-svg" src="/static/favicon.svg" style="width: 1.5em;margin-right: .1em;vertical-align: bottom;">GitHub 文件加速下载</h2>
           <form
@@ -72,7 +72,7 @@
                     name="ghq"
                     list="datalistOptions"
                     placeholder="键入Github文件链接"
-                    pattern="^((https|http):\/\/)?(github\.com\/.+?\/.+?\/(?:releases|archive|blob|raw|suites)|((?:raw|gist)\.(?:githubusercontent|github)\.com))\/.+$"
+                    pattern="^((https|http):\/\/)?(github\.com\/.+?\/.+?\/(?:releases|archive|blob|raw|suites)|((?:raw|gist)\.(?:githubusercontent|github)\.com)|(nightly\.link\/.+?/.+?/(?:workflows|actions\/runs)\/.+))\/.+$"
                     oninput="checkInputValidity(this)"
                     required />
                 <button class="btn btn-success rounded-end align-items-center" type="submit">
@@ -88,9 +88,9 @@
             <div class="card">
             <div class="card-header">
               说明：支持Github
-              releases、archive、gist和raw.githubusercontent.com下的文件代理加速下载服务，支持最大{{size_limit.replace(' ', '')}}文件。
+              releases、archive、gist和raw.githubusercontent.com、nightly.link下的文件代理加速下载服务，支持最大{{size_limit.replace(' ', '')}}文件。
             </div>
-            <div class="card-body">
+            <div class="card-body" style="padding-bottom: 0px;">
               <div class="btn-group  float-end" role="group">
                 <button id="theme-btn" type="button" class="btn btn-outline-secondary btn-sm" style="display: none;" onclick="setTheme()">
                   <!--auto-->
@@ -131,170 +131,69 @@
               <h4 class="card-title" class="fw-bold">支持格式</h4>
               <p class="text-start">
                 分支源码：https://github.com/XTLS/Xray-core/archive/refs/heads/main.zip 
-                <span class="copy_btn">
-                  <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
-                    <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
-                    <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-                  </svg>
-                </span>
+                <span class="copy-wrapper"></span>
               </p>
               <p class="text-start">
                 Release源码：https://github.com/XTLS/Xray-core/archive/refs/tags/v1.8.7.zip
-                <span class="copy_btn">
-                  <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
-                    <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
-                    <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-                  </svg>
-                </span>
+                <span class="copy-wrapper"></span>
               </p>
               <p class="text-start">
                 Release文件：https://github.com/XTLS/Xray-core/releases/download/v1.8.7/Xray-windows-64.zip
-                <span class="copy_btn">
-                  <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
-                    <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
-                    <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-                  </svg>
-                </span>
+                <span class="copy-wrapper"></span>
               </p>
               <p class="text-start">
                 分支文件：https://github.com/XTLS/Xray-core/blob/main/README.md
-                <span class="copy_btn">
-                  <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
-                    <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
-                    <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-                  </svg>
-                </span>
+                <span class="copy-wrapper"></span>
               </p>
               <p class="text-start">
                 Raw文件：https://raw.githubusercontent.com/XTLS/Xray-core/main/LICENSE
-                <span class="copy_btn">
-                  <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
-                    <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
-                    <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-                  </svg>
-                </span>
+                <span class="copy-wrapper"></span>
+              </p>
+              <p class="text-start">
+                nightly.link文件：https://nightly.link/Aliucord/Manager/workflows/build/main/app.zip
+                <span class="copy-wrapper"></span>
               </p>
               <h4 class="card-title" class="fw-bold">各种玩法</h4>
               <p class="text-start">搭配油猴脚本：<a href="https://greasyfork.org/zh-CN/scripts/504224-github%E5%8A%A0%E9%80%9F%E4%B8%8B%E8%BD%BD" class="text-decoration-none link-success"
                 target="_blank">GitHub-Fast</a></p>
               <p class="text-start">
-                短链接：<b>github</b>、<b>raw</b>、<b>gist</b> 等同于 https://github.com、https://raw.githubusercontent.com、https://gist.githubusercontent.com<br>
+                短链接：<b>github</b>、<b>raw</b>、<b>gist</b>、<b>nightly</b> 等同于 https://github.com、https://raw.githubusercontent.com、https://gist.githubusercontent.com、https://nightly.link<br>
                         <span><span class="speed-prefix ms-6"></span><b>github</b>/XTLS/Xray-core/releases/download/v1.8.7/Xray-windows-64.zip
-                         <span class="copy_btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
-                              <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
-                              <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
-                              <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
-                            </svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-                              <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-                            </svg>
-                          </span>
+                         <span class="copy-wrapper"></span>
                           </span><br>
                         <span>
                         <span class="speed-prefix ms-6"></span><b>raw</b>/XTLS/Xray-core/main/LICENSE
-                          <span class="copy_btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
-                              <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
-                              <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
-                              <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
-                            </svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-                              <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-                            </svg>
-                          </span>
+                          <span class="copy-wrapper"></span>
                         </span><br>
                         <span><span class="speed-prefix ms-6"></span><b>gist</b>/yisibl/7983901/raw/af7ec3f7fe65c298315179875cb1e5aff60d6035/git-resources.md
-                          <span class="copy_btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
-                              <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
-                              <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
-                              <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
-                            </svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-                              <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-                            </svg>
-                          </span>
+                          <span class="copy-wrapper"></span>
+                        </span><br>
+                         <span><span class="speed-prefix ms-6"></span><b>nightly</b>/Aliucord/Manager/workflows/build/main/app.zip
+                          <span class="copy-wrapper"></span>
                         </span>
               </p>
               <p class="text-start">
                 git clone：<span>git clone
                 <span class="speed-prefix"></span
                 >https://github.com/XTLS/Xray-core.git
-                  <span class="copy_btn" data-type="1">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
-                      <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
-                      <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
-                      <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
-                    </svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-                      <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-                    </svg>
-                  </span>
+                <span class="copy-wrapper" data-type="1"></span>
                 </span><br>
                 <span style="margin-left: 5.1rem;"></span><span>git clone https://user:<a href="https://github.com/settings/tokens" class="text-decoration-none link-primary" target="_blank">access_token</a>@<span class="speed-prefix-nohttp"></span
                 >/github/user/your_private_repo
-                  <span class="copy_btn" data-type="1">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
-                      <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
-                      <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
-                      <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
-                    </svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-                      <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-                    </svg>
-                  </span>
+                <span class="copy-wrapper" data-type="1"></span>
               </span>
               </p>
               <p class="text-start">
                 wget：<span>wget&nbsp;
                  <span class="speed-prefix"></span
                 >https://github.com/XTLS/Xray-core/archive/refs/heads/main.zip
-                <span class="copy_btn" data-type="1">
-                  <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
-                    <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
-                    <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-                  </svg>
-                </span></span>
+                <span class="copy-wrapper" data-type="1"></span></span>
               </p>
               <p class="text-start">
                 curl：<span>curl -O
                 <span class="speed-prefix"></span
                 >https://github.com/XTLS/Xray-core/archive/refs/tags/v1.8.7.zip
-                <span class="copy_btn" data-type="1">
-                  <svg xmlns="http://www.w3.org/2000/svg" style="display:inline-block;" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
-                    <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
-                    <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-                  </svg>
-                </span>
+                <span class="copy-wrapper" data-type="1"></span>
                 </span>
               </p>
             </div>
@@ -408,7 +307,7 @@
         </div>
       </div>
     </div>
-    <footer class="navbar-fixed-bottom" style="height: 5vh;">
+    <footer class="navbar-fixed-bottom" style="height: 4vh;">
         <p class="text-center text-muted">
         © {{ current_year }} Libs. Powered by <a
             href="https://github.com/hunshcn/gh-proxy"
@@ -418,7 +317,18 @@
         >. 已加速：<b>{{proxy_count}}</b> 次, 流量：<b>{{format_traffic}}</b>
         </p>
     </footer>
-    
+    <template id="copy-icon-template">
+      <span class="copy_btn" style="cursor: pointer;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart icon-copy">
+          <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z"/>
+          <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
+          <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z"/>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2 icon-success" style="display: none;">
+          <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+        </svg>
+      </span>
+    </template>
     <script
       src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.1/js/bootstrap.bundle.min.js"
       crossorigin="anonymous"></script>
@@ -542,7 +452,19 @@
       function checkInputValidity(inputElement) {
         var pattern = inputElement.pattern;
         var value = inputElement.value;
-        var url = locationUri + document.getElementsByName("ghq")[0].value
+        var ghqElement = document.getElementsByName("ghq")[0];
+        var ghqValue = ghqElement ? ghqElement.value : "";
+        var shortGhq = ghqValue;
+        if (shortGhq.startsWith("https://github.com")) {
+          shortGhq = shortGhq.replace("https://github.com", "github");
+        } else if (shortGhq.startsWith("https://raw.githubusercontent.com")) {
+          shortGhq = shortGhq.replace("https://raw.githubusercontent.com", "raw");
+        } else if (shortGhq.startsWith("https://gist.githubusercontent.com")) {
+          shortGhq = shortGhq.replace("https://gist.githubusercontent.com", "gist");
+        } else if (shortGhq.startsWith("https://nightly.link")) {
+          shortGhq = shortGhq.replace("https://nightly.link", "nightly");
+        }
+        var url = locationUri + shortGhq;
         if (value.match(pattern)) {
           document.getElementById('valid-feedback').innerHTML = url;
           document.getElementById('valid-feedback').style.display = 'block';
@@ -563,34 +485,58 @@
         event.stopPropagation();
         
       }, false);
-      const els = document.querySelectorAll('.copy_btn');
-      els.forEach(function(el) {
-           el.addEventListener('click', function(event) {
-            var t = this.dataset.type;
-            var text = this.parentNode.textContent;
-            if(!t || t != 1){
-                const pattern = /(https?:\/\/[^\s]+)/g;
-                const links = this.parentNode.textContent.match(pattern);
-                text = links[0];
+      document.addEventListener('DOMContentLoaded', function() {
+        const template = document.getElementById('copy-icon-template');
+        const wrappers = document.querySelectorAll('.copy-wrapper');
+
+        wrappers.forEach(wrapper => {
+          // 1. 注入模板内容
+          const clone = template.content.cloneNode(true);
+          const btn = clone.querySelector('.copy_btn');
+          
+          // 如果 HTML 里定义了 data-type，透传给按钮
+          if (wrapper.dataset.type) {
+              btn.setAttribute('data-type', wrapper.dataset.type);
+          }
+          wrapper.appendChild(clone);
+
+          // 2. 统一绑定点击事件
+          btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const isCommand = this.getAttribute('data-type') === '1';
+            let text = this.parentNode.parentNode.textContent.trim();
+            // 如果不是命令模式，提取 URL
+            if (!isCommand) {
+              const pattern = /(https?:\/\/[^\s]+)/g;
+              const links = text.match(pattern);
+              text = links ? links[0] : text;
             }
-            navigator.clipboard.writeText(text)
-              .then(() => {
-                document.querySelectorAll(".bi-clipboard-heart").forEach(function(e){
-                  e.style.display = 'inline-block';
-                });
-                document.querySelectorAll(".bi-check2").forEach(function(e){
-                  e.style.display = 'none';
-                });
-                this.querySelector(".bi-clipboard-heart").style.display = 'none';
-                this.querySelector(".bi-check2").style.display = 'inline-block';
-              })
-              .catch((error) => {
-                 notify("😣 内容复制失败！");
+            
+            navigator.clipboard.writeText(text).then(() => {
+              // 切换图标状态
+              const allCopyIcons = document.querySelectorAll('.icon-copy');
+              const allSuccessIcons = document.querySelectorAll('.icon-success');
+              
+              // 先重置所有按钮
+              allCopyIcons.forEach(el => el.style.display = 'inline-block');
+              allSuccessIcons.forEach(el => el.style.display = 'none');
+
+              // 设置当前按钮为成功状态
+              this.querySelector('.icon-copy').style.display = 'none';
+              this.querySelector('.icon-success').style.display = 'inline-block';
+        
+              notify("😁 内容复制成功！");
+              setTimeout(() => {
+                this.querySelector('.icon-copy').style.display = 'inline-block';
+                this.querySelector('.icon-success').style.display = 'none';
+              }, 1500);
+            }).catch(() => {
+              notify("😣 内容复制失败！");
             });
-            notify("😁 内容复制成功！");
-            event.preventDefault();
-            event.stopPropagation();
-          }, false);
+          });
+        });
       });
     
       function authLogin() {
